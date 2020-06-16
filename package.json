@@ -9,7 +9,6 @@
     "axios": "^0.19.2",
     "express": "^4.17.1",
     "express-favicon": "^2.0.1",
-    "http-proxy-middleware": "^1.0.4",
     "path": "^0.12.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
