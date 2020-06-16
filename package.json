@@ -2,7 +2,6 @@
   "name": "web-tasklist",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://camunda-2028877427.eu-west-1.elb.amazonaws.com",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -10,6 +9,7 @@
     "axios": "^0.19.2",
     "express": "^4.17.1",
     "express-favicon": "^2.0.1",
+    "http-proxy-middleware": "^1.0.4",
     "path": "^0.12.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
