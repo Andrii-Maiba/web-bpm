@@ -1,8 +1,17 @@
 {
   "root": "build/",
+  "routes": {
+    "/**": "index.html"
+  },
+  "clean_urls": true,
   "proxies": {
     "/api/": {
       "origin": "${API_URL}"
+    }
+  },
+  "headers": {
+    "/**": {
+      "Access-Control-Allow-Origin": "*"
     }
   }
 }
