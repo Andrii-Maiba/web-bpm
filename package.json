@@ -2,6 +2,14 @@
   "name": "web-tasklist",
   "version": "0.1.0",
   "private": true,
+  "proxy": {
+    "/api": {
+      "target": "http://camunda-2028877427.eu-west-1.elb.amazonaws.com",
+      "pathRewrite": {
+        "^/api": "/"
+      }
+    }
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -20,8 +28,7 @@
     "semantic-ui-react": "^0.88.2"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
