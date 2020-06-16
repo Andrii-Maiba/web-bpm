@@ -4,6 +4,12 @@
 /node_modules
 /.pnp
 .pnp.js
+package-lock.json
+
+# IDE specific
+.idea/
+*.iml
+.vscode/
 
 # testing
 /coverage
