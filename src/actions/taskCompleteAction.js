@@ -10,7 +10,6 @@ const completeTaskFailure = error => {
     return {
         type: COMPLETE_TASK_FAILURE,
         payload: error.message,
-        // payload: "Wrong",
     };
 };
 
@@ -32,7 +31,6 @@ const postCompleteTask = (service, dispatch) => (id, warrantyAmount, customerNam
         .catch(err => {
             console.log("err", err.data.message);
             dispatch(completeTaskFailure(err.data));
-            // dispatch(completeTaskFailure(err));
         });
 };
 

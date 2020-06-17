@@ -10,7 +10,6 @@ const createProcessFailure = error => {
     return {
         type: CREATE_PROCESS_FAILURE,
         payload: error.message,
-        // payload: "Wrong",
     };
 };
 
@@ -29,12 +28,9 @@ const clearCreateErrorMessage = () => {
 const createProcess = (service, dispatch) => (data, processKey, businessKey) => {
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.postCreateProcess(data, processKey, businessKey).then((res) => {
-        // console.log("res", res.status);
         dispatch({type: CREATE_PROCESS_SUCCESS});
     }).catch(err => {
-            // console.log("err", err.data.message);
             dispatch(createProcessFailure(err.data));
-            // dispatch(createProcessFailure(err));
         });
 };
 

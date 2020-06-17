@@ -17,17 +17,14 @@ const getTasklistFailure = error => {
 const getTasklistData = (service, dispatch) => () => {
     dispatch({type: GET_TASKLIST_REQUEST});
     service.getTasklist().then(result => {
-        // result && service.getTasksVariables(result).then(res => {
         service.getTasksVariables(result.data).then(res => {
             console.log("res in action", res);
             dispatch(getTasksVariablesSuccess({
-                // tasklistData: result,
                 tasklistData: result.data,
                 tasksVariables: res,
             }));
         })
     }).catch(err => {
-        // console.log("err", err);
             dispatch(getTasklistFailure(err));
         });
 };

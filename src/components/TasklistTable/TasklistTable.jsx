@@ -6,6 +6,7 @@ import ModalCreateContainer from "../../containers/ModalCreateContainer/ModalCre
 const TasklistTable = ({list}) => {
     const [filterValue, setFilterValue] = useState('');
     let arrayOfTaskNames = list.map(task => task.name);
+
     const filterCells = () => {
         if (filterValue.length !== 0) {
             return arrayOfTaskNames.map(name => {

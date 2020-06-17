@@ -53,7 +53,7 @@ class ModalCreateContainer extends Component {
     render() {
         const {createProcessError, clearErrorMessage} = this.props;
         if (createProcessError) {
-            setTimeout(() => clearErrorMessage(), 3000);
+            setTimeout(() => clearErrorMessage(), 4000);
         }
         return (
             <Modal trigger={<Button color="blue" onClick={this.handleCreateModalOpen}>Create</Button>}

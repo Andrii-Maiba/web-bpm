@@ -44,15 +44,13 @@ class Services {
             arrayOfTasksIds.push(task.id);
         });
         return fetchTaskInfo(arrayOfTasksIds).then(res => res);
-        // return new Promise((resolve, reject) => {
+        // return new Promise((resolve, reject) => { //for testing
         //     resolve(mockedTaskVariablesResponse)
-        //     resolve(fetchTaskInfo(arrayOfTasksIds).then(res => res))//
         //     reject(new Error('Something went wrong'))
         // });
     }
 
     postCompleteTask = (id, warrantyAmount, customerName) => {
-        console.log("id, warrantyAmount, customerName", id, warrantyAmount, customerName);
         return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {variables:
         // return axios.post(this._baseUrl + `engine/default/task/9d6c3795-aa4d-11ea-8c5f-0242ac110002/complete`, {variables: //for testing an error
             {
@@ -80,7 +78,7 @@ class Services {
             err.data = error;
             throw err;
         })
-        // return new Promise((resolve, reject) => {
+        // return new Promise((resolve, reject) => { //for testing
         //     // resolve(true)
         //     reject(new Error('Something went wrong'))
         // });

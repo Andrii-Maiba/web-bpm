@@ -26,10 +26,10 @@ class ModalCompleteContainer extends Component {
     render() {
         const {customerName, warrantyAmount, id, completeTask, completeTaskError, clearErrorMessage} = this.props;
         if (completeTaskError) {
-            setTimeout(() => clearErrorMessage(), 3000);
+            setTimeout(() => clearErrorMessage(), 4000);
         }
         return (
-            <Modal trigger={<Button color="blue" onClick={this.handleOpen}>Launch</Button>}
+            <Modal trigger={<Button color="blue" onClick={this.handleOpen}>Open</Button>}
                    open={this.state.modalOpen}
                    onClose={this.handleClose} closeIcon>
                 <Header color="blue" icon='check circle outline' content='Complete Task'/>

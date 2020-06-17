@@ -12,7 +12,7 @@ export default class HeaderNav extends Component {
             <Menu fixed='top' fluid>
                 <Menu.Item href="/">
                     <Header as='h3' color='blue'>
-                        <Image src={logo} />Camunda Tasklist</Header>
+                        <Image src={logo} />Web BPM</Header>
                 </Menu.Item>
                 <Menu.Item
                     name='tasklist'
