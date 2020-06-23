@@ -6,24 +6,23 @@ import {ENDPOINT_API_BASE} from '../constants';
 class Services {
     _baseUrl = ENDPOINT_API_BASE;
 
-    getTasklist = (assignee = "demo", processDefinitionId = "warranty_approval_test:1:e92a1672-aa4b-11ea-8c5f-0242ac110002") => {
+    getTasklist = assignee => {
         return new Promise((resolve, reject) => {
             resolve(
-                axios.get(this._baseUrl + `engine/default/task?assignee=${assignee}&processDefinitionId=${processDefinitionId}`).then((res) => res)
-                // mockedTaskListResponse
+                axios.get(this._baseUrl + `engine/default/task?assignee=${assignee}`).then((res) => res)
+                // mockedTaskListResponse //for testing
             )
             reject(new Error('Something went wrong'));
         });
     };
 
-    getTasksVariables = (tasks) => {
-        console.log("response", tasks);
+    getTasksVariables = tasks => {
         const fetchInfo = async (url, id) => {
-            console.log(`Fetching ${url}`);
             const info = await axios.get(url);
             return {
                 id,
                 warrantyAmount: info.data.warrantyAmount,
+                warrantyApplication: info.data.warrantyApplication,
                 customerName: info.data.customerName
             }
         }
@@ -51,12 +50,13 @@ class Services {
     }
 
     postCompleteTask = (id, warrantyAmount, customerName) => {
-        return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {variables:
-        // return axios.post(this._baseUrl + `engine/default/task/9d6c3795-aa4d-11ea-8c5f-0242ac110002/complete`, {variables: //for testing an error
-            {
-                customerName: {value: customerName},
-                warrantyAmount: {value: warrantyAmount}
-            }
+        return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {
+            variables:
+            // return axios.post(this._baseUrl + `engine/default/task/9d6c3795-aa4d-11ea-8c5f-0242ac110002/complete`, {variables: //for testing an error
+                {
+                    customerName: {value: customerName},
+                    warrantyAmount: {value: warrantyAmount}
+                }
         }).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
@@ -64,16 +64,39 @@ class Services {
         })
     }
 
-    postCreateProcess = ( {amount, customerName}, processKey, businessKey) => {
-        console.log("amount, name, key, busi: ", amount, customerName, processKey, businessKey);
-        return axios.post(this._baseUrl + `engine/default/process-definition/key/${processKey}/start`, {
-            variables:
-                {
-                    customerName: {value: customerName, type: "String"},
-                    warrantyAmount: {value: amount, type: "Long"}
-                },
-            businessKey : businessKey
-        }).catch(error => {
+    postCreateProcess = ({amount, customerName, fileValue, fileName}, processKey, businessKey) => {
+        // console.log("amount, name, fileValue, fileName, key, bus: ", amount, customerName, fileValue, fileName, processKey, businessKey);
+        let requestBody;
+        if (fileName) {
+            requestBody = {
+                variables:
+                    {
+                        customerName: {value: customerName, type: "String"},
+                        warrantyAmount: {value: amount, type: "Long"},
+                        warrantyApplication: {
+                            value: fileValue,
+                            type: "file",
+                            valueInfo: {
+                                filename: fileName,
+                                encoding: "Base64"
+                            }
+                        }
+                    },
+                businessKey,
+                withVariablesInReturn: true
+            }
+        } else {
+            requestBody = {
+                variables:
+                    {
+                        customerName: {value: customerName, type: "String"},
+                        warrantyAmount: {value: amount, type: "Long"}
+                    },
+                businessKey,
+                withVariablesInReturn: true
+            }
+        }
+        return axios.post(this._baseUrl + `engine/default/process-definition/key/${processKey}/start`, requestBody).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
             throw err;
@@ -82,6 +105,22 @@ class Services {
         //     // resolve(true)
         //     reject(new Error('Something went wrong'))
         // });
+    }
+
+    getTaskData = id => {
+        return axios.get(this._baseUrl + `engine/default/task?processInstanceId=${id}`).catch(error => {
+            const err = (new Error('Something went wrong'));
+            err.data = error;
+            throw err;
+        })
+    }
+
+    getTaskFileContent = id => {
+        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`).catch(error => {
+            const err = (new Error('Something went wrong'));
+            err.data = error;
+            throw err;
+        })
     }
 }
 

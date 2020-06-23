@@ -14,13 +14,14 @@ const getTasklistFailure = error => {
     };
 };
 
-const getTasklistData = (service, dispatch) => () => {
+const getTasklistData = (service, dispatch) => assignee => {
     dispatch({type: GET_TASKLIST_REQUEST});
-    service.getTasklist().then(result => {
-        service.getTasksVariables(result.data).then(res => {
-            console.log("res in action", res);
+    service.getTasklist(assignee).then(result => {
+        result && service.getTasksVariables(result.data).then(res => {
+        // result && service.getTasksVariables(result).then(res => {
             dispatch(getTasksVariablesSuccess({
                 tasklistData: result.data,
+                // tasklistData: result,
                 tasksVariables: res,
             }));
         })

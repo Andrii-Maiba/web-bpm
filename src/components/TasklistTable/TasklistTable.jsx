@@ -1,55 +1,55 @@
 import React, {useState} from "react";
-import {Icon, Menu, Table, Input} from "semantic-ui-react";
+import {Icon, Menu, Table, Input, Loader, Dimmer} from "semantic-ui-react";
 import ModalCompleteContainer from "../../containers/ModalCompleteContainer/ModalCompleteContainer";
 import ModalCreateContainer from "../../containers/ModalCreateContainer/ModalCreateContainer";
 
-const TasklistTable = ({list}) => {
+const TasklistTable = ({loading, list}) => {
     const [filterValue, setFilterValue] = useState('');
-    let arrayOfTaskNames = list.map(task => task.name);
 
-    const filterCells = () => {
+    const filterCells = l => {
         if (filterValue.length !== 0) {
-            return arrayOfTaskNames.map(name => {
-                let lowerCaseFilterValue = filterValue.toLowerCase();
-                if (name.toLowerCase().includes(lowerCaseFilterValue, 0)) {
-                    let filteredList = list.filter(el => el.name === name);
-                    return filteredList.map((task, idx) => renderCells(task, idx));
-                } else {
-                    return null;
-                }
-            })
+            let lowerCaseFilterValue = filterValue.toLowerCase();
+            let filteredList = l.filter(el => el.customerName.value.toLowerCase().includes(lowerCaseFilterValue, 0));
+            if (filteredList.length > 0) {
+                return filteredList.map((elem, idx) => renderCells(elem, idx));
+            } else {
+                return null;
+            }
         } else {
-            return list.map((task, idx) => renderCells(task, idx));
+            return l.map((element, index) => renderCells(element, index));
         }
     }
 
-    const renderCells = (task, idx) => {
+    const renderCells = (task, i) => {
         let processDefinition, formattedProcessDefinition;
-        if (task.processDefinitionId) {
+        if (task) {
             processDefinition = task.processDefinitionId.substring(0, task.processDefinitionId.indexOf(':'));
             formattedProcessDefinition = processDefinition.split('_').join(' ');
         }
         return (
-            <Table.Row key={idx}><Table.Cell>{task.name && task.name}</Table.Cell>
+            <Table.Row key={i}>
+                <Table.Cell>{task.name}</Table.Cell>
                 <Table.Cell>{task.customerName && task.customerName.value}</Table.Cell>
-                <Table.Cell>{task.processDefinitionId && formattedProcessDefinition[0].toUpperCase() + formattedProcessDefinition.slice(1)}</Table.Cell>
+                <Table.Cell>{formattedProcessDefinition[0].toUpperCase() + formattedProcessDefinition.slice(1)}</Table.Cell>
                 <Table.Cell>{task.warrantyAmount && task.warrantyAmount.value}</Table.Cell>
                 <Table.Cell>{task.created && task.created.split('T')[0]}</Table.Cell>
                 <Table.Cell>{task.due && task.due.split('T')[0]}</Table.Cell>
                 <Table.Cell>
-                    <ModalCompleteContainer customerName={task.customerName && task.customerName.value}
-                                   warrantyAmount={task.warrantyAmount && task.warrantyAmount.value}
-                                   id={task.id} />
+                    <ModalCompleteContainer customerName={task.customerName && task.customerName}
+                                            warrantyAmount={task.warrantyAmount && task.warrantyAmount}
+                                            warrantyApp={task.warrantyApplication && task.warrantyApplication}
+                                            id={task.id}/>
                 </Table.Cell>
-            </Table.Row>)
+            </Table.Row>
+        )
     }
 
     return (
         <div className='TasklistTable'>
             <div className='flexBetween'>
-                <ModalCreateContainer />
+                <ModalCreateContainer/>
                 <Input value={filterValue} onChange={e => setFilterValue(e.target.value)} focus icon='search'
-                       placeholder='Filter by task name'/>
+                       placeholder='Filter by customer'/>
             </div>
             <Table>
                 <Table.Header>
@@ -64,7 +64,10 @@ const TasklistTable = ({list}) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {list && filterCells()}
+                    {loading && <Table.Row><Table.Cell><Dimmer active inverted>
+                        <Loader inverted size='large'/>
+                    </Dimmer></Table.Cell></Table.Row>}
+                    {list && filterCells(list)}
                 </Table.Body>
                 <Table.Footer>
                     <Table.Row>

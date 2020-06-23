@@ -3,13 +3,21 @@ import {
     CREATE_PROCESS_FAILURE,
     CREATE_PROCESS_SUCCESS,
     CLEAR_CREATE_ERROR_MESSAGE,
-    CLOSE_CREATE_MODAL
+    CLOSE_CREATE_MODAL,
+    CREATE_TASK_SUCCESS
 } from '../constants/createProcess';
 
 const createProcessFailure = error => {
     return {
         type: CREATE_PROCESS_FAILURE,
         payload: error.message,
+    };
+};
+
+const createTaskSuccess = (variables, taskData) => {
+    return {
+        type: CREATE_TASK_SUCCESS,
+        payload: {...taskData, ...variables},
     };
 };
 
@@ -27,11 +35,15 @@ const clearCreateErrorMessage = () => {
 
 const createProcess = (service, dispatch) => (data, processKey, businessKey) => {
     dispatch({type: CREATE_PROCESS_REQUEST});
-    service.postCreateProcess(data, processKey, businessKey).then((res) => {
+    service.postCreateProcess(data, processKey, businessKey).then(res => {
+        // console.log("POST Created process response", res.data)
         dispatch({type: CREATE_PROCESS_SUCCESS});
-    }).catch(err => {
-            dispatch(createProcessFailure(err.data));
+        res && service.getTaskData(res.data.id).then(result => {
+            dispatch(createTaskSuccess(res.data.variables, result.data[0]));
         });
+    }).catch(err => {
+        dispatch(createProcessFailure(err.data));
+    });
 };
 
 export {createProcess, clearCreateErrorMessage, closeCreateModal};

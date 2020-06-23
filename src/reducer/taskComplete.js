@@ -1,9 +1,18 @@
-import {COMPLETE_TASK_REQUEST, COMPLETE_TASK_FAILURE, COMPLETE_TASK_SUCCESS, CLEAR_ERROR_MESSAGE, CLOSE_TASK} from '../constants/completeTask';
+import {
+    COMPLETE_TASK_REQUEST,
+    COMPLETE_TASK_FAILURE,
+    COMPLETE_TASK_SUCCESS,
+    GET_TASK_APP_DATA_REQUEST,
+    // GET_TASK_APP_DATA_SUCCESS,
+    CLEAR_ERROR_MESSAGE,
+    CLOSE_TASK
+} from '../constants/completeTask';
 
 const updateTaskComplete = (state, action) => {
     if (typeof state === 'undefined') {
         return {
             loading: false,
+            // taskAppData: null,
             completeTaskError: null,
             isComplete: false,
         };
@@ -14,11 +23,31 @@ const updateTaskComplete = (state, action) => {
         case COMPLETE_TASK_SUCCESS:
             return {
                 loading: false,
+                // taskAppData: null,
                 completeTaskError: null,
                 isComplete: true,
             };
+        case GET_TASK_APP_DATA_REQUEST:
+            return {
+                loading: true,
+                // taskAppData: null,
+                completeTaskError: null,
+                isComplete: false,
+            };
+        // case GET_TASK_APP_DATA_SUCCESS:
+        //     return {
+        //         loading: false,
+        //         taskAppData: action.payload,
+        //         completeTaskError: null,
+        //         isComplete: false,
+        //     };
         case COMPLETE_TASK_FAILURE:
-            return {loading: false, completeTaskError: action.payload, isComplete: false};
+            return {
+                ...state.taskComplete,
+                loading: false,
+                completeTaskError: action.payload,
+                isComplete: false
+            };
         case CLEAR_ERROR_MESSAGE:
             return {
                 ...state.taskComplete,
@@ -26,7 +55,10 @@ const updateTaskComplete = (state, action) => {
                 isComplete: false,
             };
         case CLOSE_TASK:
-            return {loading: false, completeTaskError: null, isComplete: false};
+            return {loading: false,
+                // taskAppData: null,
+                completeTaskError: null,
+                isComplete: false};
         default:
             return state.taskComplete;
     }

@@ -6,14 +6,15 @@ import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
 import {getTasklistData} from '../../actions/tasklistAction';
 
-class TasklistPageContainer extends Component {
+class ArchivePageContainer extends Component {
     componentDidMount() {
-        this.props.getTasklistData();
+        this.props.getTasklistData("Archive");
     }
 
     shouldComponentUpdate(nextProps) {
         return !(this.props.isComplete !== nextProps.isComplete ||
             this.props.completeTaskError !== nextProps.completeTaskError ||
+            // this.props.taskAppData !== nextProps.taskAppData ||
             this.props.isCreated !== nextProps.isCreated ||
             this.props.createProcessError !== nextProps.createProcessError);
     }
@@ -22,7 +23,6 @@ class TasklistPageContainer extends Component {
         return (
             <Container>
                 <div className='tasklistBody'>
-                    {this.props.loading && 'Loading...'}
                     <TasklistTable {...this.props}/>
                 </div>
             </Container>
@@ -34,10 +34,11 @@ const mapStateToProps = ({
                              tasklist: {list, loading},
                              taskComplete: {isComplete, completeTaskError},
                              processCreate: {isCreated, createProcessError}
-}) => {
+                         }) => {
     return {
         list,
         loading,
+        // taskAppData,
         isComplete,
         completeTaskError,
         isCreated,
@@ -47,8 +48,8 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch, {services}) => {
     return {
-        getTasklistData: getTasklistData(services, dispatch),
+        getTasklistData: assignee => getTasklistData(services, dispatch)(assignee),
     };
 };
 
-export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(TasklistPageContainer);
+export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(ArchivePageContainer);
