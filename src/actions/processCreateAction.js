@@ -36,7 +36,6 @@ const clearCreateErrorMessage = () => {
 const createProcess = (service, dispatch) => (data, processKey, businessKey) => {
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.postCreateProcess(data, processKey, businessKey).then(res => {
-        // console.log("POST Created process response", res.data)
         dispatch({type: CREATE_PROCESS_SUCCESS});
         res && service.getTaskData(res.data.id).then(result => {
             dispatch(createTaskSuccess(res.data.variables, result.data[0]));

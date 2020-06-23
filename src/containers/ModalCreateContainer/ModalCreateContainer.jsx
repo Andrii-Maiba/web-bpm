@@ -61,7 +61,6 @@ class ModalCreateContainer extends Component {
     }
 
     handleSubmit = event => {
-        console.log("Create", this.state.data);
         this.props.createProcess(this.state.data);
         event.preventDefault();
     }
@@ -98,11 +97,11 @@ class ModalCreateContainer extends Component {
                                     onChange={this.handleChange}
                         />
                         <label className="inputfilelabel">
-                        <FileBase64
+                            <FileBase64
                                 multiple={false}
                                 onDone={this.handleFileInputChange.bind(this)}/>
-                        {(this.state.data.fileName !== "") ?
-                            this.state.data.fileName : "Choose a file"}</label>
+                            {(this.state.data.fileName !== "") ?
+                                this.state.data.fileName : "Choose a file"}</label>
                         {createProcessError && <Message
                             error
                             header='An error occurred'

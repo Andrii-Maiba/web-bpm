@@ -8,8 +8,8 @@ import {
     CLOSE_TASK
 } from '../constants/completeTask';
 import {DELETE_TASK} from '../constants/tasklist';
-// import {defineFileType} from '../utils/defineFileType';
-// import { saveAs } from 'file-saver';
+import {saveAs} from 'file-saver';
+import {Blob} from 'blob-polyfill';
 
 const deleteTask = id => {
     return {
@@ -58,20 +58,8 @@ const postCompleteTask = (service, dispatch) => (id, warrantyAmount, customerNam
 const getTaskAppData = (service, dispatch) => (id, appName) => {
     dispatch({type: GET_TASK_APP_DATA_REQUEST});
     service.getTaskFileContent(id).then(res => {
-        // console.log("File content response", res.data);
-        const URL = window.URL || window.webkitURL;
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        // let mimeType = defineFileType(appName);
-        // let blob = new Blob([res.data], {type: "octet/stream"});
         let blob = new Blob([res.data]);
-        let url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = appName;
-        a.click();
-        URL.revokeObjectURL(url);
-        // dispatch(getFileData(URL.createObjectURL(new Blob([res.data]))));
+        saveAs(blob, appName);
     }).catch(err => {
         err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
     });

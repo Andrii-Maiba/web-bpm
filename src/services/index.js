@@ -116,7 +116,9 @@ class Services {
     }
 
     getTaskFileContent = id => {
-        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`).catch(error => {
+        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
+            responseType: 'arraybuffer'
+        }).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
             throw err;
