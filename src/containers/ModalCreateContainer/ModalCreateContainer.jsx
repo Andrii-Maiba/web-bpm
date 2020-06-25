@@ -17,7 +17,7 @@ class ModalCreateContainer extends Component {
         if (nextProps.isCreated) {
             this.setState({
                 modalCreateOpen: false,
-                data: {customerName: '', amount: 0},
+                data: {customerName: '', amount: 0.00},
                 amountValidationErr: null
             });
             this.props.closeModal();
@@ -43,21 +43,34 @@ class ModalCreateContainer extends Component {
             this.setState({...this.state, data: {...this.state.data, customerName: value.toString()}});
         }
         if (event.target.name === "amount") {
-            isNaN(value) ? this.setState({
-                ...this.state,
-                data: {...this.state.data, amount: value},
-                amountValidationErr: "Please enter a number"
-            }) : this.setState({
-                ...this.state,
-                data: {...this.state.data, amount: value},
-                amountValidationErr: null
-            });
+            if (isNaN(value)) {
+                this.setState({
+                    ...this.state,
+                    data: {...this.state.data, amount: value},
+                    amountValidationErr: "Please enter a number"
+                });
+            } else if (!/^-?[0-9]+[.][0-9]{2}$/.test(value) || value === "-0.00") {
+                this.setState({
+                    ...this.state,
+                    data: {...this.state.data, amount: value},
+                    amountValidationErr: "Please enter an amount with two decimal places"
+                });
+            } else {
+                this.setState({
+                    ...this.state,
+                    data: {...this.state.data, amount: value},
+                    amountValidationErr: null
+                });
+            }
         }
     }
 
     handleFileInputChange = results => {
         const fileValueBase64 = results.base64.split(',')[1];
-        this.setState({...this.state, data: {...this.state.data, fileValue: fileValueBase64, fileName: results.name}});
+        this.setState({
+            ...this.state,
+            data: {...this.state.data, fileValue: fileValueBase64, fileName: results.name}
+        });
     }
 
     handleSubmit = event => {
@@ -90,7 +103,7 @@ class ModalCreateContainer extends Component {
                                     id='form-input-control-amount'
                                     control={Input}
                                     label='Amount'
-                                    placeholder='0'
+                                    placeholder='0.00'
                                     name="amount"
                                     value={this.state.data.amount}
                                     error={this.state.amountValidationErr}
@@ -107,21 +120,22 @@ class ModalCreateContainer extends Component {
                             header='An error occurred'
                             content={createProcessError}
                         />}
-                        {this.state.amountValidationErr !== null || this.state.data.customerName === '' ? <Form.Field
-                            id='form-button-control-public'
-                            control={Button}
-                            color="blue"
-                            floated='right'
-                            className="createButton"
-                            content='New' disabled
-                        /> : <Form.Field
-                            id='form-button-control-public'
-                            control={Button}
-                            color="blue"
-                            floated='right'
-                            className="createButton"
-                            content='New'
-                        />}
+                        {this.state.amountValidationErr !== null || this.state.data.customerName === '' ?
+                            <Form.Field
+                                id='form-button-control-public'
+                                control={Button}
+                                color="blue"
+                                floated='right'
+                                className="createButton"
+                                content='New' disabled
+                            /> : <Form.Field
+                                id='form-button-control-public'
+                                control={Button}
+                                color="blue"
+                                floated='right'
+                                className="createButton"
+                                content='New'
+                            />}
                     </Form>
                 </Modal.Content>
             </Modal>
@@ -129,22 +143,32 @@ class ModalCreateContainer extends Component {
     }
 }
 
-const mapStateToProps = ({processCreate: {isCreated, createProcessError}}) => {
-    return {
-        isCreated,
-        createProcessError
+const
+    mapStateToProps = ({processCreate: {isCreated, createProcessError}}) => {
+        return {
+            isCreated,
+            createProcessError
+        };
     };
-};
 
-const mapDispatchToProps = (dispatch, {services}) => {
-    return {
-        createProcess: (data,
-                        processKey = "warranty_approval_test",
-                        businessKey = "myBusinessKey") => createProcess(services, dispatch)(data, processKey, businessKey),
-        clearErrorMessage: () => dispatch(clearCreateErrorMessage()),
-        closeModal: () => dispatch(closeCreateModal())
+const
+    mapDispatchToProps = (dispatch, {services}) => {
+        return {
+            createProcess: (data,
+                            processKey = "warranty_approval_test",
+                            businessKey = "myBusinessKey") => createProcess(services, dispatch)(data, processKey, businessKey),
+            clearErrorMessage: () => dispatch(clearCreateErrorMessage()),
+            closeModal: () => dispatch(closeCreateModal())
+        };
     };
-};
 
 
-export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCreateContainer);
+export default compose(withServices
+
+    (),
+
+    connect(mapStateToProps, mapDispatchToProps)
+)(
+    ModalCreateContainer
+)
+;

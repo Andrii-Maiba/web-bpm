@@ -72,7 +72,7 @@ class Services {
                 variables:
                     {
                         customerName: {value: customerName, type: "String"},
-                        warrantyAmount: {value: amount, type: "Long"},
+                        warrantyAmount: {value: amount, type: "Double"},
                         warrantyApplication: {
                             value: fileValue,
                             type: "file",
@@ -90,7 +90,7 @@ class Services {
                 variables:
                     {
                         customerName: {value: customerName, type: "String"},
-                        warrantyAmount: {value: amount, type: "Long"}
+                        warrantyAmount: {value: amount, type: "Double"}
                     },
                 businessKey,
                 withVariablesInReturn: true

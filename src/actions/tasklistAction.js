@@ -17,6 +17,7 @@ const getTasklistFailure = error => {
 const getTasklistData = (service, dispatch) => assignee => {
     dispatch({type: GET_TASKLIST_REQUEST});
     service.getTasklist(assignee).then(result => {
+        // console.log(result.data);
         result && service.getTasksVariables(result.data).then(res => {
         // result && service.getTasksVariables(result).then(res => {
             dispatch(getTasksVariablesSuccess({

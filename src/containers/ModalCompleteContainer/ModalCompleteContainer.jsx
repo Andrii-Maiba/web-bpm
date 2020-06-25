@@ -4,10 +4,11 @@ import {Button, Header, Message, Modal, Loader} from 'semantic-ui-react';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
 import {postCompleteTask, clearErrorMessage, closeTask, getTaskAppData} from '../../actions/taskCompleteAction';
+import {outputAmountString} from "../../utils/outputAmountString";
 
 class ModalCompleteContainer extends Component {
     state = {modalOpen: false};
-    // fileLink = React.createRef();
+    amount = outputAmountString(this.props.warrantyAmount.value);
 
     shouldComponentUpdate(nextProps) {
         if (nextProps.isComplete) {
@@ -17,10 +18,6 @@ class ModalCompleteContainer extends Component {
         }
         return true;
     }
-    // componentWillUnmount() {
-    //     let windowUrl = window.URL || window.webkitURL;
-    //         windowUrl.revokeObjectURL(this.props.taskAppData);
-    // }
 
     handleOpen = () => {
         this.setState({modalOpen: true});
@@ -32,9 +29,6 @@ class ModalCompleteContainer extends Component {
     handleDownloadFile = e => {
         e.preventDefault();
         this.props.getTaskAppData(this.props.id, this.props.warrantyApp.valueInfo.filename);
-        // e.target.click();
-        // const file = new File(this.props.taskAppData);
-        // download(file, this.props.warrantyApp.valueInfo.filename);
     }
 
     render() {
@@ -56,7 +50,7 @@ class ModalCompleteContainer extends Component {
                     </div>
                     <div className="flexStart">
                         <Header as='h4' content='Amount:'/>
-                        <p className="modalText">{warrantyAmount.value}</p>
+                        <p className="modalText">{this.amount}</p>
                     </div>
                     {completeTaskError && <Message negative>
                         <Message.Header>An error occurred</Message.Header>
