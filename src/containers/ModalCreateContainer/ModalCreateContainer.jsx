@@ -9,7 +9,7 @@ import {createProcess, clearCreateErrorMessage, closeCreateModal} from '../../ac
 class ModalCreateContainer extends Component {
     state = {
         modalCreateOpen: false,
-        data: {customerName: '', amount: 0, fileValue: "", fileName: ""},
+        data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""},
         amountValidationErr: null
     }
 
@@ -28,12 +28,12 @@ class ModalCreateContainer extends Component {
 
     handleCreateModalOpen = () => this.setState({
         modalCreateOpen: true,
-        data: {customerName: '', amount: 0, fileValue: "", fileName: ""}, amountValidationErr: null
+        data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""}, amountValidationErr: null
     })
     handleCreateModalClose = () => {
         this.setState({
             modalCreateOpen: false,
-            data: {customerName: '', amount: 0, fileValue: "", fileName: ""},
+            data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""},
             amountValidationErr: null
         });
         this.props.closeModal();
@@ -65,11 +65,11 @@ class ModalCreateContainer extends Component {
         }
     }
 
-    handleFileInputChange = results => {
-        const fileValueBase64 = results.base64.split(',')[1];
+    handleFileInputChange = result => {
+        const fileValueBase64 = result.base64.split(',')[1];
         this.setState({
             ...this.state,
-            data: {...this.state.data, fileValue: fileValueBase64, fileName: results.name}
+            data: {...this.state.data, fileValue: fileValueBase64, fileName: result.name}
         });
     }
 
@@ -163,12 +163,4 @@ const
     };
 
 
-export default compose(withServices
-
-    (),
-
-    connect(mapStateToProps, mapDispatchToProps)
-)(
-    ModalCreateContainer
-)
-;
+export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCreateContainer);

@@ -22,15 +22,13 @@ const TasklistTable = ({loading, list}) => {
     }
 
     const renderCells = (task, i) => {
-        let processDefinition, formattedProcessDefinition;
-        if (task) {
-            processDefinition = task.processDefinitionId.substring(0, task.processDefinitionId.indexOf(':'));
-            formattedProcessDefinition = processDefinition.split('_').join(' ');
-        }
+        let processDefinition = task.processDefinitionId.substring(0, task.processDefinitionId.indexOf(':'));
+        let formattedProcessDefinition = processDefinition.split('_').join(' ');
         let amount;
         if (task.warrantyAmount) {
             amount = outputAmountString(task.warrantyAmount.value);
         }
+
         return (
             <Table.Row key={i}>
                 <Table.Cell>{task.name}</Table.Cell>
@@ -40,10 +38,7 @@ const TasklistTable = ({loading, list}) => {
                 <Table.Cell>{task.created && task.created.split('T')[0]}</Table.Cell>
                 <Table.Cell>{task.due && task.due.split('T')[0]}</Table.Cell>
                 <Table.Cell>
-                    <ModalCompleteContainer customerName={task.customerName && task.customerName}
-                                            warrantyAmount={task.warrantyAmount && task.warrantyAmount}
-                                            warrantyApp={task.warrantyApplication && task.warrantyApplication}
-                                            id={task.id}/>
+                    <ModalCompleteContainer id={task.id} procDefinitionKey={processDefinition} taskDefinitionKey={task.taskDefinitionKey}/>
                 </Table.Cell>
             </Table.Row>
         )
@@ -65,7 +60,7 @@ const TasklistTable = ({loading, list}) => {
                         <Table.HeaderCell>Amount</Table.HeaderCell>
                         <Table.HeaderCell>Created</Table.HeaderCell>
                         <Table.HeaderCell>Due</Table.HeaderCell>
-                        <Table.HeaderCell>Launch Task</Table.HeaderCell>
+                        <Table.HeaderCell>Complete Task</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>

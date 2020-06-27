@@ -49,14 +49,11 @@ class Services {
         // });
     }
 
-    postCompleteTask = (id, warrantyAmount, customerName) => {
+    postCompleteTask = (id, formData) => {
+        const completeTaskReqBodyVars = {};
+        formData.forEach(el => completeTaskReqBodyVars[el.id] = {value: el.value});
         return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {
-            variables:
-            // return axios.post(this._baseUrl + `engine/default/task/9d6c3795-aa4d-11ea-8c5f-0242ac110002/complete`, {variables: //for testing an error
-                {
-                    customerName: {value: customerName},
-                    warrantyAmount: {value: warrantyAmount}
-                }
+            variables: completeTaskReqBodyVars
         }).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
@@ -64,8 +61,15 @@ class Services {
         })
     }
 
+    getXml = processKey => {
+        return axios.get(this._baseUrl + `process-definition/key/${processKey}/xml`).catch(error => {
+            const err = (new Error('Something went wrong'));
+            err.data = error;
+            throw err;
+        })
+    }
+
     postCreateProcess = ({amount, customerName, fileValue, fileName}, processKey, businessKey) => {
-        // console.log("amount, name, fileValue, fileName, key, bus: ", amount, customerName, fileValue, fileName, processKey, businessKey);
         let requestBody;
         if (fileName) {
             requestBody = {
@@ -101,10 +105,6 @@ class Services {
             err.data = error;
             throw err;
         })
-        // return new Promise((resolve, reject) => { //for testing
-        //     // resolve(true)
-        //     reject(new Error('Something went wrong'))
-        // });
     }
 
     getTaskData = id => {
@@ -115,15 +115,15 @@ class Services {
         })
     }
 
-    getTaskFileContent = id => {
-        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
-            responseType: 'arraybuffer'
-        }).catch(error => {
-            const err = (new Error('Something went wrong'));
-            err.data = error;
-            throw err;
-        })
-    }
+    // getTaskFileContent = id => {
+    //     return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
+    //         responseType: 'arraybuffer'
+    //     }).catch(error => {
+    //         const err = (new Error('Something went wrong'));
+    //         err.data = error;
+    //         throw err;
+    //     })
+    // }
 }
 
 export default Services;

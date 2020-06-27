@@ -2,14 +2,13 @@ import {
     COMPLETE_TASK_REQUEST,
     COMPLETE_TASK_FAILURE,
     COMPLETE_TASK_SUCCESS,
-    GET_TASK_APP_DATA_REQUEST,
-    // GET_TASK_APP_DATA_SUCCESS,
     CLEAR_ERROR_MESSAGE,
-    CLOSE_TASK
+    CLOSE_TASK,
+    GET_XML_SUCCESS,
 } from '../constants/completeTask';
 import {DELETE_TASK} from '../constants/tasklist';
-import {saveAs} from 'file-saver';
-import {Blob} from 'blob-polyfill';
+// import {saveAs} from 'file-saver';
+// import {Blob} from 'blob-polyfill';
 
 const deleteTask = id => {
     return {
@@ -29,17 +28,24 @@ const closeTask = () => {
     return {
         type: CLOSE_TASK
     };
-}
+};
 
 const clearErrorMessage = () => {
     return {
         type: CLEAR_ERROR_MESSAGE
     };
-}
+};
 
-const postCompleteTask = (service, dispatch) => (id, warrantyAmount, customerName) => {
+const getXmlSuccess = xml => {
+    return {
+        type: GET_XML_SUCCESS,
+        payload: xml
+    };
+};
+
+const postCompleteTask = (service, dispatch) => (id, formData) => {
     dispatch({type: COMPLETE_TASK_REQUEST});
-    service.postCompleteTask(id, warrantyAmount, customerName).then(() => {
+    service.postCompleteTask(id, formData).then(res => {
         dispatch({type: COMPLETE_TASK_SUCCESS});
         dispatch(deleteTask(id));
     }).catch(err => {
@@ -48,21 +54,28 @@ const postCompleteTask = (service, dispatch) => (id, warrantyAmount, customerNam
     });
 };
 
-// const getFileData = fileUrl => {
-//     return {
-//         type: GET_TASK_APP_DATA_SUCCESS,
-//         payload: fileUrl
-//     }
-// }
+// const getTaskAppData = (service, dispatch) => (id, appName) => {
+//     dispatch({type: COMPLETE_TASK_REQUEST});
+//     service.getTaskFileContent(id).then(res => {
+//         let blob = new Blob([res.data]);
+//         saveAs(blob, appName);
+//     }).catch(err => {
+//         err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
+//     });
+// };
 
-const getTaskAppData = (service, dispatch) => (id, appName) => {
-    dispatch({type: GET_TASK_APP_DATA_REQUEST});
-    service.getTaskFileContent(id).then(res => {
-        let blob = new Blob([res.data]);
-        saveAs(blob, appName);
+const getXml = (service, dispatch) => (procDefinitionKey, taskDefinitionKey) => {
+    dispatch({type: COMPLETE_TASK_REQUEST});
+    service.getXml(procDefinitionKey).then(res => {
+        // console.log("getXml response", res.data.bpmn20Xml);
+        let oParser = new DOMParser();
+        let oDOM = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
+        let taskFormData = [...oDOM.documentElement.firstElementChild.children]
+            .filter(el => el.nodeName === "bpmn:userTask" && el.id === taskDefinitionKey)[0].children;
+        dispatch(getXmlSuccess(taskFormData));
     }).catch(err => {
         err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
     });
 };
 
-export {postCompleteTask, clearErrorMessage, closeTask, getTaskAppData};
+export {postCompleteTask, clearErrorMessage, closeTask, getXml};
