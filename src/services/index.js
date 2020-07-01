@@ -51,7 +51,17 @@ class Services {
 
     postCompleteTask = (id, formData) => {
         const completeTaskReqBodyVars = {};
-        formData.forEach(el => completeTaskReqBodyVars[el.id] = {value: el.value});
+        formData.forEach(el => {
+            if (el.fileName) {
+                return completeTaskReqBodyVars[el.id] = {
+                    value: el.value, type: el.type, valueInfo: {
+                        filename: el.fileName,
+                        encoding: "Base64"
+                    }
+                };
+            }
+            return completeTaskReqBodyVars[el.id] = {value: el.value, type: el.type};
+        });
         return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {
             variables: completeTaskReqBodyVars
         }).catch(error => {

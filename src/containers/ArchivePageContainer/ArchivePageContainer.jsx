@@ -4,7 +4,7 @@ import {Container} from 'semantic-ui-react';
 import TasklistTable from '../../components/TasklistTable/TasklistTable';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
-import {getTasklistData} from '../../actions/tasklistAction';
+import {getTasklistData, setCurrentItemsPart} from '../../actions/tasklistAction';
 
 class ArchivePageContainer extends Component {
     componentDidMount() {
@@ -31,13 +31,15 @@ class ArchivePageContainer extends Component {
 }
 
 const mapStateToProps = ({
-                             tasklist: {list, loading},
+                             tasklist: {list, loading, currentItemsPart, currentPartsPortion},
                              taskComplete: {isComplete, completeTaskError, xmlData},
                              processCreate: {isCreated, createProcessError}
                          }) => {
     return {
         list,
         loading,
+        currentItemsPart,
+        currentPartsPortion,
         xmlData,
         isComplete,
         completeTaskError,
@@ -49,6 +51,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = (dispatch, {services}) => {
     return {
         getTasklistData: assignee => getTasklistData(services, dispatch)(assignee),
+        setCurrentItemsPart: (part, portion) => dispatch(setCurrentItemsPart(part, portion))
     };
 };
 

@@ -2,21 +2,12 @@
   "name": "web-tasklist",
   "version": "0.1.0",
   "private": true,
-  "proxy": {
-    "/api": {
-      "target": "http://194.28.103.177:8080",
-      "pathRewrite": {
-        "^/api": "/"
-      }
-    }
-  },
+  "proxy": "http://194.28.103.177:8080",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
-    "blob-polyfill": "^4.0.20200601",
-    "file-saver": "^2.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-file-base64": "^1.0.3",

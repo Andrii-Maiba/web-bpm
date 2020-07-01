@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
+import FileBase64 from 'react-file-base64';
 import {Button, Header, Message, Modal, Loader, Dimmer, Form, Input} from 'semantic-ui-react';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
@@ -8,6 +9,7 @@ import {postCompleteTask, clearErrorMessage, closeTask, getXml} from '../../acti
 class ModalCompleteContainer extends Component {
     state = {modalOpen: false, isValidationError: false};
     formDataFields;
+
     getFormValues = (formDataFields, formValues = []) => {
         [...formDataFields].forEach(el => {
             let fieldData = {};
@@ -22,6 +24,10 @@ class ModalCompleteContainer extends Component {
             if (el.attributes.type.value === "double") {
                 fieldData.value = 0.00;
                 fieldData.doubleValidationErr = null;
+            }
+            if (el.attributes.type.value === "file") {
+                fieldData.value = '';
+                fieldData.fileName = '';
             }
             if (el.attributes.type.value === "boolean") {
                 fieldData.value = false;
@@ -108,6 +114,19 @@ class ModalCompleteContainer extends Component {
         this.setState({...this.state, isValidationError, data: [...formFields]});
     }
 
+    handleFileInputChange = (e, id) => {
+        const fileValueBase64 = e.base64.split(',')[1];
+        const formFieldsData = this.state.data;
+        formFieldsData.forEach(field => {
+            if (field.id === id) {
+                field.value = fileValueBase64;
+                field.fileName = e.name;
+            }
+            return field;
+        });
+        this.setState({...this.state, data: [...formFieldsData]});
+    }
+
     // handleDownloadFile = e => {
     //     e.preventDefault();
     //     this.props.getTaskAppData(this.props.id, this.props.warrantyApp.valueInfo.filename);
@@ -133,7 +152,7 @@ class ModalCompleteContainer extends Component {
                     {this.state.data && <Form onSubmit={this.handleSubmit} error>
                         {this.state.data.map(el => {
                             if (el.type === "string" && el.id.toLowerCase().includes("comment")) {
-                                return (<Form.TextArea key={el.id} required
+                                return (<Form.TextArea key={el.id}
                                                        label={el.label}
                                                        name={el.type}
                                                        placeholder={el.label}
@@ -174,6 +193,12 @@ class ModalCompleteContainer extends Component {
                                                        name={el.type}
                                                        onChange={e => this.handleChange(e, el.id, el.type, el.value)}
                                 />)
+                            } else if (el.type === "file") {
+                                return (<label key={el.id} className="form__file-input-label">
+                                    <FileBase64 multiple={false}
+                                                onDone={e => this.handleFileInputChange(e, el.id)}/>
+                                    {(el.fileName !== "") ? el.fileName : "Choose a file"}
+                                </label>)
                             } else {
                                 return (<Form.Field key={el.id} required fluid width={8}
                                                     control={Input}
@@ -189,13 +214,13 @@ class ModalCompleteContainer extends Component {
                             control={Button}
                             color="blue"
                             floated='right'
-                            className="createButton"
+                            className="modalButton"
                             content='Complete' disabled
                         /> : <Form.Field
                             control={Button}
                             color="blue"
                             floated='right'
-                            className="createButton"
+                            className="modalButton"
                             content='Complete'
                         />}
                     </Form>}

@@ -17,7 +17,7 @@ class ModalCreateContainer extends Component {
         if (nextProps.isCreated) {
             this.setState({
                 modalCreateOpen: false,
-                data: {customerName: '', amount: 0.00},
+                data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""},
                 amountValidationErr: null
             });
             this.props.closeModal();
@@ -109,7 +109,7 @@ class ModalCreateContainer extends Component {
                                     error={this.state.amountValidationErr}
                                     onChange={this.handleChange}
                         />
-                        <label className="inputfilelabel">
+                        <label className="form__file-input-label">
                             <FileBase64
                                 multiple={false}
                                 onDone={this.handleFileInputChange.bind(this)}/>
@@ -126,14 +126,14 @@ class ModalCreateContainer extends Component {
                                 control={Button}
                                 color="blue"
                                 floated='right'
-                                className="createButton"
+                                className="modalButton"
                                 content='New' disabled
                             /> : <Form.Field
                                 id='form-button-control-public'
                                 control={Button}
                                 color="blue"
                                 floated='right'
-                                className="createButton"
+                                className="modalButton"
                                 content='New'
                             />}
                     </Form>

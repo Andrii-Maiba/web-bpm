@@ -1,4 +1,4 @@
-import {GET_TASKLIST_REQUEST, GET_TASKLIST_FAILURE, GET_TASKSDATA_SUCCESS} from '../constants/tasklist';
+import {GET_TASKLIST_REQUEST, GET_TASKLIST_FAILURE, GET_TASKSDATA_SUCCESS, SET_CURRENT_ITEMS_PART} from '../constants/tasklist';
 
 const getTasksVariablesSuccess = values => {
     return {
@@ -14,15 +14,19 @@ const getTasklistFailure = error => {
     };
 };
 
+const setCurrentItemsPart = (part, portion) => {
+    return {
+        type: SET_CURRENT_ITEMS_PART,
+        payload: {part, portion},
+    };
+}
+
 const getTasklistData = (service, dispatch) => assignee => {
     dispatch({type: GET_TASKLIST_REQUEST});
     service.getTasklist(assignee).then(result => {
-        // console.log(result.data);
         result && service.getTasksVariables(result.data).then(res => {
-        // result && service.getTasksVariables(result).then(res => {
             dispatch(getTasksVariablesSuccess({
                 tasklistData: result.data,
-                // tasklistData: result,
                 tasksVariables: res,
             }));
         })
@@ -31,4 +35,4 @@ const getTasklistData = (service, dispatch) => assignee => {
         });
 };
 
-export { getTasklistData };
+export { getTasklistData, setCurrentItemsPart };
