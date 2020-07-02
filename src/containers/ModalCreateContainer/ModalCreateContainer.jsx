@@ -9,7 +9,7 @@ import {createProcess, clearCreateErrorMessage, closeCreateModal} from '../../ac
 class ModalCreateContainer extends Component {
     state = {
         modalCreateOpen: false,
-        data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""},
+        data: {customerName: '', amount: 0, fileValue: "", fileName: ""},
         amountValidationErr: null
     }
 
@@ -17,7 +17,7 @@ class ModalCreateContainer extends Component {
         if (nextProps.isCreated) {
             this.setState({
                 modalCreateOpen: false,
-                data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""},
+                data: {customerName: '', amount: 0, fileValue: "", fileName: ""},
                 amountValidationErr: null
             });
             this.props.closeModal();
@@ -28,12 +28,12 @@ class ModalCreateContainer extends Component {
 
     handleCreateModalOpen = () => this.setState({
         modalCreateOpen: true,
-        data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""}, amountValidationErr: null
+        data: {customerName: '', amount: 0, fileValue: "", fileName: ""}, amountValidationErr: null
     })
     handleCreateModalClose = () => {
         this.setState({
             modalCreateOpen: false,
-            data: {customerName: '', amount: 0.00, fileValue: "", fileName: ""},
+            data: {customerName: '', amount: 0, fileValue: "", fileName: ""},
             amountValidationErr: null
         });
         this.props.closeModal();
@@ -49,11 +49,11 @@ class ModalCreateContainer extends Component {
                     data: {...this.state.data, amount: value},
                     amountValidationErr: "Please enter a number"
                 });
-            } else if (!/^-?[0-9]+[.][0-9]{2}$/.test(value) || value === "-0.00") {
+            } else if (value.toString().includes(".")) {
                 this.setState({
                     ...this.state,
                     data: {...this.state.data, amount: value},
-                    amountValidationErr: "Please enter an amount with two decimal places"
+                    amountValidationErr: "Please enter an integer"
                 });
             } else {
                 this.setState({
@@ -62,6 +62,12 @@ class ModalCreateContainer extends Component {
                     amountValidationErr: null
                 });
             }
+            // } else if (!/^-?[0-9]+[.][0-9]{2}$/.test(value) || value === "-0.00") {
+            //     this.setState({
+            //         ...this.state,
+            //         data: {...this.state.data, amount: value},
+            //         amountValidationErr: "Please enter an amount with two decimal places"
+            //     });
         }
     }
 
@@ -103,7 +109,7 @@ class ModalCreateContainer extends Component {
                                     id='form-input-control-amount'
                                     control={Input}
                                     label='Amount'
-                                    placeholder='0.00'
+                                    placeholder='0'
                                     name="amount"
                                     value={this.state.data.amount}
                                     error={this.state.amountValidationErr}
