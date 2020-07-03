@@ -1,4 +1,5 @@
 @import url("containers/MakerTasklistPageContainer/MakerTasklistPageContainer.css");
+@import url("containers/ModalCompleteContainer/ModalCompleteContainer.css");
 
 body {
   margin: 0;
@@ -83,4 +84,14 @@ input[type="file"] + .form__file-input-label:hover {
 
 input[type="file"] + .form__file-input-label * {
   pointer-events: none;
+}
+
+.label {
+  display: block;
+  margin: 0 0 .28571429rem 0;
+  color: rgba(0,0,0,.87);
+  font-size: .92857143em;
+  font-weight: 700;
+  text-transform: none;
+  line-height: 1.4;
 }

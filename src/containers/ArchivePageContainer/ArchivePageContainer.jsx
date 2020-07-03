@@ -15,6 +15,7 @@ class ArchivePageContainer extends Component {
         return !(this.props.isComplete !== nextProps.isComplete ||
             this.props.completeTaskError !== nextProps.completeTaskError ||
             this.props.xmlData !== nextProps.xmlData ||
+            this.props.openedTask !== nextProps.openedTask ||
             this.props.isCreated !== nextProps.isCreated ||
             this.props.createProcessError !== nextProps.createProcessError);
     }

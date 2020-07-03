@@ -19,12 +19,14 @@ class Services {
     getTasksVariables = tasks => {
         const fetchInfo = async (url, id) => {
             const info = await axios.get(url);
-            return {
-                id,
-                warrantyAmount: info.data.warrantyAmount,
-                warrantyApplication: info.data.warrantyApplication,
-                customerName: info.data.customerName
+            const task = {id};
+            for (let key in info.data) {
+                if (info.data.hasOwnProperty(key)) {
+                    task[key] = info.data[key];
+                }
             }
+            // console.log("vars res", task);
+            return task
         }
 
         const fetchTaskInfo = async (taskIds) => {
@@ -52,16 +54,33 @@ class Services {
     postCompleteTask = (id, formData) => {
         const completeTaskReqBodyVars = {};
         formData.forEach(el => {
-            if (el.fileName) {
-                return completeTaskReqBodyVars[el.id] = {
-                    value: el.value, type: el.type, valueInfo: {
-                        filename: el.fileName,
-                        encoding: "Base64"
-                    }
-                };
+            if (el.type === "file") {
+                if (!el.isFile && el.fileName !== "") {
+                    completeTaskReqBodyVars[el.id] = {
+                        value: el.value,
+                        type: el.type,
+                        valueInfo: {
+                            filename: el.fileName,
+                            encoding: "Base64"
+                        }
+                    };
+                }
+                // else {
+                //     return;
+                // }
+            } else if (el.type === "enum") {
+                if (el.value !== "") {
+                    completeTaskReqBodyVars[el.id] = {value: el.value, type: "string"}; // +long +double
+                }
+            } else if (el.type === "string") {
+                if (el.value !== "") {
+                    completeTaskReqBodyVars[el.id] = {value: el.value.trim(), type: el.type};
+                }
+            } else {
+                completeTaskReqBodyVars[el.id] = {value: el.value, type: el.type};
             }
-            return completeTaskReqBodyVars[el.id] = {value: el.value, type: el.type};
         });
+        console.log("completeReqBodyVars", completeTaskReqBodyVars)
         return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {
             variables: completeTaskReqBodyVars
         }).catch(error => {
@@ -125,15 +144,15 @@ class Services {
         })
     }
 
-    // getTaskFileContent = id => {
-    //     return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
-    //         responseType: 'arraybuffer'
-    //     }).catch(error => {
-    //         const err = (new Error('Something went wrong'));
-    //         err.data = error;
-    //         throw err;
-    //     })
-    // }
+    getTaskFileContent = id => {
+        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
+            responseType: 'arraybuffer'
+        }).catch(error => {
+            const err = (new Error('Something went wrong'));
+            err.data = error;
+            throw err;
+        })
+    }
 }
 
 export default Services;

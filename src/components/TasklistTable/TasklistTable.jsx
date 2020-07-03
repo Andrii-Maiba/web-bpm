@@ -77,7 +77,7 @@ const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, cu
                 <Table.Cell>{task.created && task.created.split('T')[0]}</Table.Cell>
                 <Table.Cell>{task.due && task.due.split('T')[0]}</Table.Cell>
                 <Table.Cell>
-                    <ModalCompleteContainer id={task.id} procDefinitionKey={processDefinition}
+                    <ModalCompleteContainer id={task.id} task={task} procDefinitionKey={processDefinition}
                                             taskDefinitionKey={task.taskDefinitionKey}/>
                 </Table.Cell>
             </Table.Row>

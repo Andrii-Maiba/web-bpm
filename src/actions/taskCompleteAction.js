@@ -5,10 +5,11 @@ import {
     CLEAR_ERROR_MESSAGE,
     CLOSE_TASK,
     GET_XML_SUCCESS,
+    GET_FILE_DATA_SUCCESS, OPEN_TASK
 } from '../constants/completeTask';
 import {DELETE_TASK} from '../constants/tasklist';
-// import {saveAs} from 'file-saver';
-// import {Blob} from 'blob-polyfill';
+import {saveAs} from 'file-saver';
+import {Blob} from 'blob-polyfill';
 
 const deleteTask = id => {
     return {
@@ -23,6 +24,13 @@ const completeTaskFailure = error => {
         payload: error.message,
     };
 };
+
+const openTask = task => {
+    return {
+        type: OPEN_TASK,
+        payload: task
+    };
+}
 
 const closeTask = () => {
     return {
@@ -46,23 +54,25 @@ const getXmlSuccess = xml => {
 const postCompleteTask = (service, dispatch) => (id, formData) => {
     dispatch({type: COMPLETE_TASK_REQUEST});
     service.postCompleteTask(id, formData).then(res => {
+        // console.log("postCompleteStatus", res.status)
         dispatch({type: COMPLETE_TASK_SUCCESS});
         dispatch(deleteTask(id));
     }).catch(err => {
-        console.log("err", err.data.message);
+        // console.log("err", err.data.message);
         dispatch(completeTaskFailure(err.data));
     });
 };
 
-// const getTaskAppData = (service, dispatch) => (id, appName) => {
-//     dispatch({type: COMPLETE_TASK_REQUEST});
-//     service.getTaskFileContent(id).then(res => {
-//         let blob = new Blob([res.data]);
-//         saveAs(blob, appName);
-//     }).catch(err => {
-//         err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
-//     });
-// };
+const getTaskAppData = (service, dispatch) => (id, fileName) => {
+    dispatch({type: COMPLETE_TASK_REQUEST});
+    service.getTaskFileContent(id).then(res => {
+        let blob = new Blob([res.data]);
+        saveAs(blob, fileName);
+        dispatch({type: GET_FILE_DATA_SUCCESS});
+    }).catch(err => {
+        err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
+    });
+};
 
 const getXml = (service, dispatch) => (procDefinitionKey, taskDefinitionKey) => {
     dispatch({type: COMPLETE_TASK_REQUEST});
@@ -78,4 +88,4 @@ const getXml = (service, dispatch) => (procDefinitionKey, taskDefinitionKey) => 
     });
 };
 
-export {postCompleteTask, clearErrorMessage, closeTask, getXml};
+export {postCompleteTask, clearErrorMessage, closeTask, getXml, getTaskAppData, openTask};

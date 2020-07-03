@@ -4,33 +4,66 @@ import FileBase64 from 'react-file-base64';
 import {Button, Header, Message, Modal, Loader, Dimmer, Form, Input} from 'semantic-ui-react';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
-import {postCompleteTask, clearErrorMessage, closeTask, getXml} from '../../actions/taskCompleteAction';
+import {
+    postCompleteTask,
+    clearErrorMessage,
+    closeTask,
+    getXml,
+    getTaskAppData,
+    openTask
+} from '../../actions/taskCompleteAction';
 
 class ModalCompleteContainer extends Component {
     state = {modalOpen: false, isValidationError: false};
     formDataFields;
 
     getFormValues = (formDataFields, formValues = []) => {
+        // let fileData = {};
         [...formDataFields].forEach(el => {
             let fieldData = {};
             fieldData.id = el.attributes.id.value;
             if (el.attributes.type.value === "string") {
-                fieldData.value = '';
+                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : '';
             }
             if (el.attributes.type.value === "long") {
-                fieldData.value = 0;
+                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : 0;
+                if (this.state.task[fieldData.id].value.toString().includes(".")) {
+                    fieldData.longValidationErr = "Please enter an integer";
+                    // isValidationError = true; //make submit button not active
+                } else {
                 fieldData.longValidationErr = null;
+                }
             }
             if (el.attributes.type.value === "double") {
-                fieldData.value = 0.00;
-                fieldData.doubleValidationErr = null;
+                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : 0.00;
+                if (!/^-?[0-9]+[.][0-9]{2}$/.test(this.state.task[fieldData.id].value)) {
+                    fieldData.doubleValidationErr = "Please enter a number with two decimal places";
+                    // isValidationError = true; //make submit button not active
+                } else {
+                    fieldData.doubleValidationErr = null;
+                }
             }
             if (el.attributes.type.value === "file") {
                 fieldData.value = '';
-                fieldData.fileName = '';
+                if (this.state.task[fieldData.id] !== undefined && this.state.task[fieldData.id].type === "File") {
+                    fieldData.fileName = this.state.task[fieldData.id].valueInfo.filename;
+                    fieldData.isFile = true; // change req body vars in service
+                } else {
+                    fieldData.fileName = "";
+                    fieldData.isFile = false;
+                }
+                // fileData[fieldData.id] = false;
             }
             if (el.attributes.type.value === "boolean") {
-                fieldData.value = false;
+                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : false;
+            }
+            if (el.attributes.type.value === "enum") {
+                const enumValues = [...el.attributes.id.ownerElement.children];
+                fieldData.values = [];
+                fieldData.value = "";
+                enumValues.forEach(el => {
+                    fieldData.values.push(el.attributes);
+                });
             }
             fieldData.type = el.attributes.type.value;
             fieldData.label = el.attributes.label.value;
@@ -41,29 +74,41 @@ class ModalCompleteContainer extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.xmlData !== this.props.xmlData && this.props.xmlData !== null) {
-            this.formDataFields = [...this.props.xmlData].find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
+        if (this.props.openedTask !== prevProps.openedTask && prevProps.openedTask === undefined) {
             this.setState({
+                ...this.state,
+                task: this.props.openedTask
+            });
+        }
+        if (prevProps.xmlData !== this.props.xmlData && prevProps.xmlData === null) {
+            this.formDataFields = [...this.props.xmlData].find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
+            // const [formValues, fileData] = this.getFormValues(this.formDataFields);
+            this.setState({
+                ...this.state,
                 modalOpen: true,
                 data: this.getFormValues(this.formDataFields),
+                // isChosenFile: false,
                 isValidationError: false
             });
         }
     }
 
-    shouldComponentUpdate(nextProps) {
+    shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.isComplete || (nextProps.xmlData !== this.props.xmlData && nextProps.xmlData === null)) {
             this.setState({modalOpen: false, isValidationError: false});
             this.props.closeTask();
             return false;
         }
         return true;
+        // this.state.isChosenFile === nextState.isChosenFile;
     }
 
     handleOpen = () => {
-        this.setState({modalOpen: true, isValidationError: false});
+        this.props.openTask(this.props.task)
         this.props.getXml(this.props.procDefinitionKey, this.props.taskDefinitionKey);
+        this.setState({modalOpen: true, isValidationError: false});
     }
+
     handleClose = () => {
         this.setState({modalOpen: false, isValidationError: false});
         this.props.closeTask();
@@ -80,7 +125,7 @@ class ModalCompleteContainer extends Component {
                 field.value = !value;
             }
             if (field.id === id && event.target.name === "long") {
-                if (isNaN(event.target.value)) {
+                if (isNaN(event.target.value) || event.target.value.toString().includes(" ")) {
                     field.value = event.target.value;
                     field.longValidationErr = "Please enter a number";
                     isValidationError = true;
@@ -95,7 +140,7 @@ class ModalCompleteContainer extends Component {
                 }
             }
             if (field.id === id && event.target.name === "double") {
-                if (isNaN(event.target.value) || event.target.value === "-0.00") {
+                if (isNaN(event.target.value) || event.target.value === "-0.00" || event.target.value.toString().includes(" ")) {
                     field.value = event.target.value;
                     field.doubleValidationErr = "Please enter a number";
                     isValidationError = true;
@@ -108,6 +153,10 @@ class ModalCompleteContainer extends Component {
                     field.doubleValidationErr = null;
                     isValidationError = false;
                 }
+            }
+            if (field.id === id && type && type === "enum") {
+                console.log("select e.target.value", event.target.value)
+                field.value = event.target.value;
             }
             return field;
         });
@@ -124,21 +173,29 @@ class ModalCompleteContainer extends Component {
             }
             return field;
         });
+        // const newFileData = this.state.fileData;
+        // for (let key in newFileData) {
+        //     if (newFileData.hasOwnProperty(key) && key === id) {
+        //         newFileData[key] = true;
+        //     }
+        // }
         this.setState({...this.state, data: [...formFieldsData]});
+        // console.log(this.state.data);
     }
 
-    // handleDownloadFile = e => {
-    //     e.preventDefault();
-    //     this.props.getTaskAppData(this.props.id, this.props.warrantyApp.valueInfo.filename);
-    // }
+    handleDownloadFile = (e, fileName) => {
+        e.preventDefault();
+        this.props.getTaskAppData(this.state.task.id, fileName)
+    }
 
     handleSubmit = event => {
-        this.props.completeTask(this.props.id, this.state.data)
+        this.props.completeTask(this.state.task.id, this.state.data)
         event.preventDefault();
     }
 
     render() {
         const {loading, completeTaskError, clearErrorMessage} = this.props;
+        // console.log("task", this.props.openedTask)
         if (completeTaskError) {
             setTimeout(() => clearErrorMessage(), 4000);
         }
@@ -165,7 +222,7 @@ class ModalCompleteContainer extends Component {
                                                     name={el.type}
                                                     placeholder={el.label}
                                                     value={el.value}
-                                                    onChange={e => this.handleChange(e, el.id, el.type)}
+                                                    onChange={e => this.handleChange(e, el.id)}
                                 />)
                             } else if (el.type === "long") {
                                 return (<Form.Field key={el.id} required fluid width={8}
@@ -194,11 +251,25 @@ class ModalCompleteContainer extends Component {
                                                        onChange={e => this.handleChange(e, el.id, el.type, el.value)}
                                 />)
                             } else if (el.type === "file") {
-                                return (<label key={el.id} className="form__file-input-label">
-                                    <FileBase64 multiple={false}
-                                                onDone={e => this.handleFileInputChange(e, el.id)}/>
-                                    {(el.fileName !== "") ? el.fileName : "Choose a file"}
-                                </label>)
+                                return (<div key={el.id}><label className="label">{el.label}</label>
+                                    {el.isFile ? <a className="complete__file-link"
+                                                    download={el.fileName}
+                                                    href={el.fileName}
+                                                    onClick={e => this.handleDownloadFile(e, el.fileName)}>{el.fileName}</a> :
+                                        <label key={el.id} className="form__file-input-label">
+                                            <FileBase64 multiple={false}
+                                                        onDone={e => this.handleFileInputChange(e, el.id)}/>
+                                            {(el.fileName !== "") ? el.fileName : "Choose a file"}
+                                        </label>}
+                                </div>)
+                            } else if (el.type === "enum") {
+                                return (<Form.Field key={el.id} value={el.value} label={el.label} name={el.id}
+                                                    onChange={e => this.handleChange(e, el.id, el.type)}
+                                                    control='select'>
+                                    <option value={""}>{""}</option>
+                                    {el.values.map(elem => <option key={elem.id.value}
+                                                                   value={elem.id.value}>{elem.name.value}</option>)}
+                                </Form.Field>)
                             } else {
                                 return (<Form.Field key={el.id} required fluid width={8}
                                                     control={Input}
@@ -235,19 +306,22 @@ class ModalCompleteContainer extends Component {
     }
 }
 
-const mapStateToProps = ({taskComplete: {loading, isComplete, completeTaskError, xmlData}}) => {
+const mapStateToProps = ({taskComplete: {loading, isComplete, completeTaskError, xmlData, openedTask}}) => {
     return {
         loading,
         xmlData,
         isComplete,
-        completeTaskError
+        completeTaskError,
+        openedTask
     };
 };
 
 const mapDispatchToProps = (dispatch, {services}) => {
     return {
-        completeTask: (id, formData) => postCompleteTask(services, dispatch)(id, formData),
+        openTask: task => dispatch(openTask(task)),
         getXml: (procDefinitionKey, taskDefinitionKey) => getXml(services, dispatch)(procDefinitionKey, taskDefinitionKey),
+        getTaskAppData: (id, fileName) => getTaskAppData(services, dispatch)(id, fileName),
+        completeTask: (id, formData) => postCompleteTask(services, dispatch)(id, formData),
         clearErrorMessage: () => dispatch(clearErrorMessage()),
         closeTask: () => dispatch(closeTask())
     };

@@ -43,7 +43,7 @@ class ModalCreateContainer extends Component {
             this.setState({...this.state, data: {...this.state.data, customerName: value.toString()}});
         }
         if (event.target.name === "amount") {
-            if (isNaN(value)) {
+            if (isNaN(value) || event.target.value.toString().includes(" ")) {
                 this.setState({
                     ...this.state,
                     data: {...this.state.data, amount: value},
