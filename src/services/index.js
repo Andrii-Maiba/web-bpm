@@ -19,13 +19,12 @@ class Services {
     getTasksVariables = tasks => {
         const fetchInfo = async (url, id) => {
             const info = await axios.get(url);
-            const task = {id};
+                        const task = {id};
             for (let key in info.data) {
                 if (info.data.hasOwnProperty(key)) {
                     task[key] = info.data[key];
                 }
             }
-            // console.log("vars res", task);
             return task
         }
 
@@ -80,7 +79,7 @@ class Services {
                 completeTaskReqBodyVars[el.id] = {value: el.value, type: el.type};
             }
         });
-        console.log("completeReqBodyVars", completeTaskReqBodyVars)
+        // console.log("completeReqBodyVars", completeTaskReqBodyVars)
         return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {
             variables: completeTaskReqBodyVars
         }).catch(error => {

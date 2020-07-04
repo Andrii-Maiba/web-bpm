@@ -10,9 +10,11 @@ import {
 const addVariablesToTasks = ({tasklistData, tasksVariables}) => {
     tasklistData.forEach(task => {
         let chosenTask = tasksVariables.find(el => el.id === task.id);
-        task.customerName = chosenTask.customerName;
-        task.warrantyAmount = chosenTask.warrantyAmount;
-        task.warrantyApplication = chosenTask.warrantyApplication;
+        for (let key in chosenTask) {
+            if (chosenTask.hasOwnProperty(key)) {
+                task[key] = chosenTask[key]
+            }
+        }
         return task;
     })
     return [...tasklistData];

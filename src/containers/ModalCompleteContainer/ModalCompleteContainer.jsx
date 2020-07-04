@@ -155,7 +155,7 @@ class ModalCompleteContainer extends Component {
                 }
             }
             if (field.id === id && type && type === "enum") {
-                console.log("select e.target.value", event.target.value)
+                // console.log("select e.target.value", event.target.value)
                 field.value = event.target.value;
             }
             return field;
