@@ -64,9 +64,6 @@ class Services {
                         }
                     };
                 }
-                // else {
-                //     return;
-                // }
             } else if (el.type === "enum") {
                 if (el.value !== "") {
                     completeTaskReqBodyVars[el.id] = {value: el.value, type: "string"}; // +long +double

@@ -25,6 +25,7 @@ const getTasklistData = (service, dispatch) => assignee => {
     dispatch({type: GET_TASKLIST_REQUEST});
     service.getTasklist(assignee).then(result => {
         result && service.getTasksVariables(result.data).then(res => {
+            // console.log("vars", res)
             dispatch(getTasksVariablesSuccess({
                 tasklistData: result.data,
                 tasksVariables: res,

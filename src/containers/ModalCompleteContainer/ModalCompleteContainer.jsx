@@ -18,7 +18,6 @@ class ModalCompleteContainer extends Component {
     formDataFields;
 
     getFormValues = (formDataFields, formValues = []) => {
-        // let fileData = {};
         [...formDataFields].forEach(el => {
             let fieldData = {};
             fieldData.id = el.attributes.id.value;
@@ -31,7 +30,7 @@ class ModalCompleteContainer extends Component {
                     fieldData.longValidationErr = "Please enter an integer";
                     // isValidationError = true; //make submit button not active
                 } else {
-                fieldData.longValidationErr = null;
+                    fieldData.longValidationErr = null;
                 }
             }
             if (el.attributes.type.value === "double") {
@@ -47,12 +46,11 @@ class ModalCompleteContainer extends Component {
                 fieldData.value = '';
                 if (this.state.task[fieldData.id] !== undefined && this.state.task[fieldData.id].type === "File") {
                     fieldData.fileName = this.state.task[fieldData.id].valueInfo.filename;
-                    fieldData.isFile = true; // change req body vars in service
+                    fieldData.isFile = true;
                 } else {
                     fieldData.fileName = "";
                     fieldData.isFile = false;
                 }
-                // fileData[fieldData.id] = false;
             }
             if (el.attributes.type.value === "boolean") {
                 fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : false;
@@ -60,10 +58,16 @@ class ModalCompleteContainer extends Component {
             if (el.attributes.type.value === "enum") {
                 const enumValues = [...el.attributes.id.ownerElement.children];
                 fieldData.values = [];
-                fieldData.value = "";
                 enumValues.forEach(el => {
                     fieldData.values.push(el.attributes);
-                });
+                })
+                let defaultValueName;
+                if (el.attributes.defaultValue) {
+                    const defaultValue = el.attributes.defaultValue.value;
+                    defaultValueName = defaultValue.substring(defaultValue.indexOf('{') + 1, defaultValue.indexOf('}'));
+                }
+                // console.log("defaultValueName", defaultValueName)
+                fieldData.value = this.state.task[defaultValueName] ? this.state.task[defaultValueName] : fieldData.values[0];
             }
             fieldData.type = el.attributes.type.value;
             fieldData.label = el.attributes.label.value;
@@ -87,7 +91,6 @@ class ModalCompleteContainer extends Component {
                 ...this.state,
                 modalOpen: true,
                 data: this.getFormValues(this.formDataFields),
-                // isChosenFile: false,
                 isValidationError: false
             });
         }
@@ -100,7 +103,6 @@ class ModalCompleteContainer extends Component {
             return false;
         }
         return true;
-        // this.state.isChosenFile === nextState.isChosenFile;
     }
 
     handleOpen = () => {
@@ -155,7 +157,7 @@ class ModalCompleteContainer extends Component {
                 }
             }
             if (field.id === id && type && type === "enum") {
-                // console.log("select e.target.value", event.target.value)
+                console.log("select e.target.value", event.target.value)
                 field.value = event.target.value;
             }
             return field;
@@ -266,7 +268,6 @@ class ModalCompleteContainer extends Component {
                                 return (<Form.Field key={el.id} value={el.value} label={el.label} name={el.id}
                                                     onChange={e => this.handleChange(e, el.id, el.type)}
                                                     control='select'>
-                                    <option value={""}>{""}</option>
                                     {el.values.map(elem => <option key={elem.id.value}
                                                                    value={elem.id.value}>{elem.name.value}</option>)}
                                 </Form.Field>)
