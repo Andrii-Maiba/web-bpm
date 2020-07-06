@@ -66,8 +66,7 @@ class ModalCompleteContainer extends Component {
                     const defaultValue = el.attributes.defaultValue.value;
                     defaultValueName = defaultValue.substring(defaultValue.indexOf('{') + 1, defaultValue.indexOf('}'));
                 }
-                // console.log("defaultValueName", defaultValueName)
-                fieldData.value = this.state.task[defaultValueName] ? this.state.task[defaultValueName] : fieldData.values[0];
+                fieldData.value = this.state.task[defaultValueName] ? this.state.task[defaultValueName].value : fieldData.values[0].id.value;
             }
             fieldData.type = el.attributes.type.value;
             fieldData.label = el.attributes.label.value;
@@ -86,7 +85,6 @@ class ModalCompleteContainer extends Component {
         }
         if (prevProps.xmlData !== this.props.xmlData && prevProps.xmlData === null) {
             this.formDataFields = [...this.props.xmlData].find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
-            // const [formValues, fileData] = this.getFormValues(this.formDataFields);
             this.setState({
                 ...this.state,
                 modalOpen: true,
@@ -157,7 +155,7 @@ class ModalCompleteContainer extends Component {
                 }
             }
             if (field.id === id && type && type === "enum") {
-                console.log("select e.target.value", event.target.value)
+                // console.log("select e.target.value", event.target.value)
                 field.value = event.target.value;
             }
             return field;
@@ -175,14 +173,7 @@ class ModalCompleteContainer extends Component {
             }
             return field;
         });
-        // const newFileData = this.state.fileData;
-        // for (let key in newFileData) {
-        //     if (newFileData.hasOwnProperty(key) && key === id) {
-        //         newFileData[key] = true;
-        //     }
-        // }
         this.setState({...this.state, data: [...formFieldsData]});
-        // console.log(this.state.data);
     }
 
     handleDownloadFile = (e, fileName) => {
@@ -197,7 +188,6 @@ class ModalCompleteContainer extends Component {
 
     render() {
         const {loading, completeTaskError, clearErrorMessage} = this.props;
-        // console.log("task", this.props.openedTask)
         if (completeTaskError) {
             setTimeout(() => clearErrorMessage(), 4000);
         }
