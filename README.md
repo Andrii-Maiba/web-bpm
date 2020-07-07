@@ -5,5 +5,5 @@ Open https://web-bpm.herokuapp.com/ to view the deployed app
 - clone the repository
 
 Then run in the project directory:
-- npm install
-- npm start
+- `npm install`
+- `npm start`

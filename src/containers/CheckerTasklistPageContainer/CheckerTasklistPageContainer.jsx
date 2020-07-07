@@ -15,6 +15,7 @@ class CheckerTasklistPageContainer extends Component {
         return !(this.props.isComplete !== nextProps.isComplete ||
             this.props.completeTaskError !== nextProps.completeTaskError ||
             this.props.xmlData !== nextProps.xmlData ||
+            this.props.xmlStartEventData !== nextProps.xmlStartEventData ||
             this.props.openedTask !== nextProps.openedTask ||
             this.props.isCreated !== nextProps.isCreated ||
             this.props.createProcessError !== nextProps.createProcessError);
@@ -34,7 +35,7 @@ class CheckerTasklistPageContainer extends Component {
 const mapStateToProps = ({
                              tasklist: {list, loading, currentItemsPart, currentPartsPortion},
                              taskComplete: {isComplete, completeTaskError, xmlData},
-                             processCreate: {isCreated, createProcessError}
+                             processCreate: {isCreated, createProcessError, xmlStartEventData}
                          }) => {
     return {
         list,
@@ -45,7 +46,8 @@ const mapStateToProps = ({
         isComplete,
         completeTaskError,
         isCreated,
-        createProcessError
+        createProcessError,
+        xmlStartEventData
     };
 };
 

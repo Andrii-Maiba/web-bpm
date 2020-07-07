@@ -16,6 +16,7 @@ class MakerTasklistPageContainer extends Component {
             this.props.completeTaskError !== nextProps.completeTaskError ||
             this.props.openedTask !== nextProps.openedTask ||
             this.props.xmlData !== nextProps.xmlData ||
+            this.props.xmlStartEventData !== nextProps.xmlStartEventData ||
             this.props.isCreated !== nextProps.isCreated ||
             this.props.createProcessError !== nextProps.createProcessError);
     }
@@ -34,7 +35,7 @@ class MakerTasklistPageContainer extends Component {
 const mapStateToProps = ({
                              tasklist: {list, loading, currentItemsPart, currentPartsPortion},
                              taskComplete: {isComplete, completeTaskError, xmlData, openedTask},
-                             processCreate: {isCreated, createProcessError}
+                             processCreate: {isCreated, createProcessError, xmlStartEventData}
 }) => {
     return {
         list,
@@ -46,7 +47,8 @@ const mapStateToProps = ({
         isComplete,
         completeTaskError,
         isCreated,
-        createProcessError
+        createProcessError,
+        xmlStartEventData
     };
 };
 

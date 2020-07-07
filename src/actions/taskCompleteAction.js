@@ -75,9 +75,9 @@ const getTaskAppData = (service, dispatch) => (id, fileName) => {
 };
 
 const getXml = (service, dispatch) => (procDefinitionKey, taskDefinitionKey) => {
+    // console.log("getXml action", procDefinitionKey, taskDefinitionKey)
     dispatch({type: COMPLETE_TASK_REQUEST});
     service.getXml(procDefinitionKey).then(res => {
-        // console.log("getXml response", res.data.bpmn20Xml);
         let oParser = new DOMParser();
         let oDOM = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
         let taskFormData = [...oDOM.documentElement.firstElementChild.children]

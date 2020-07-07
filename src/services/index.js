@@ -19,7 +19,7 @@ class Services {
     getTasksVariables = tasks => {
         const fetchInfo = async (url, id) => {
             const info = await axios.get(url);
-                        const task = {id};
+            const task = {id};
             for (let key in info.data) {
                 if (info.data.hasOwnProperty(key)) {
                     task[key] = info.data[key];
@@ -51,11 +51,11 @@ class Services {
     }
 
     postCompleteTask = (id, formData) => {
-        const completeTaskReqBodyVars = {};
+        const variables = {};
         formData.forEach(el => {
             if (el.type === "file") {
                 if (!el.isFile && el.fileName !== "") {
-                    completeTaskReqBodyVars[el.id] = {
+                    variables[el.id] = {
                         value: el.value,
                         type: el.type,
                         valueInfo: {
@@ -66,20 +66,18 @@ class Services {
                 }
             } else if (el.type === "enum") {
                 if (el.value !== "") {
-                    completeTaskReqBodyVars[el.id] = {value: el.value, type: "string"}; // +long +double
+                    variables[el.id] = {value: el.value, type: "string"};
                 }
             } else if (el.type === "string") {
                 if (el.value !== "") {
-                    completeTaskReqBodyVars[el.id] = {value: el.value.trim(), type: el.type};
+                    variables[el.id] = {value: el.value.trim(), type: el.type};
                 }
             } else {
-                completeTaskReqBodyVars[el.id] = {value: el.value, type: el.type};
+                variables[el.id] = {value: el.value, type: el.type};
             }
         });
-        // console.log("completeReqBodyVars", completeTaskReqBodyVars)
-        return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {
-            variables: completeTaskReqBodyVars
-        }).catch(error => {
+        // console.log("completeReqBodyVars", variables)
+        return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, { variables }).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
             throw err;
@@ -94,38 +92,38 @@ class Services {
         })
     }
 
-    postCreateProcess = ({amount, customerName, fileValue, fileName}, processKey, businessKey) => {
-        let requestBody;
-        if (fileName) {
-            requestBody = {
-                variables:
-                    {
-                        customerName: {value: customerName, type: "String"},
-                        warrantyAmount: {value: amount, type: "Long"},
-                        warrantyApplication: {
-                            value: fileValue,
-                            type: "file",
-                            valueInfo: {
-                                filename: fileName,
-                                encoding: "Base64"
-                            }
+    postCreateProcess = (formData, processKey, businessKey) => {
+        const variables = {};
+        formData.forEach(el => {
+            if (el.type === "file") {
+                if (el.fileName !== "") {
+                    variables[el.id] = {
+                        value: el.value,
+                        type: el.type,
+                        valueInfo: {
+                            filename: el.fileName,
+                            encoding: "Base64"
                         }
-                    },
-                businessKey,
-                withVariablesInReturn: true
+                    };
+                }
+            } else if (el.type === "enum") {
+                if (el.value !== "") {
+                    variables[el.id] = {value: el.value, type: "string"};
+                }
+            } else if (el.type === "string") {
+                if (el.value !== "") {
+                    variables[el.id] = {value: el.value.trim(), type: el.type};
+                }
+            } else {
+                variables[el.id] = {value: el.value, type: el.type};
             }
-        } else {
-            requestBody = {
-                variables:
-                    {
-                        customerName: {value: customerName, type: "String"},
-                        warrantyAmount: {value: amount, type: "Long"}
-                    },
-                businessKey,
-                withVariablesInReturn: true
-            }
-        }
-        return axios.post(this._baseUrl + `engine/default/process-definition/key/${processKey}/start`, requestBody).catch(error => {
+        });
+        // console.log(" createProcessReqBodyVars", variables)
+        return axios.post(this._baseUrl + `engine/default/process-definition/key/${processKey}/start`, {
+            variables,
+            businessKey,
+            withVariablesInReturn: true
+        }).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
             throw err;

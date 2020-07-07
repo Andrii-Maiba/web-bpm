@@ -4,8 +4,9 @@ import {
     CREATE_PROCESS_SUCCESS,
     CLEAR_CREATE_ERROR_MESSAGE,
     CLOSE_CREATE_MODAL,
-    CREATE_TASK_SUCCESS
+    GET_START_EVENT_XML_SUCCESS
 } from '../constants/createProcess';
+import {CREATE_TASK_SUCCESS} from '../constants/tasklist'
 
 const createProcessFailure = error => {
     return {
@@ -33,6 +34,13 @@ const clearCreateErrorMessage = () => {
     };
 }
 
+const getStartEventXmlSuccess = startEventXml => {
+    return {
+        type: GET_START_EVENT_XML_SUCCESS,
+        payload: startEventXml
+    };
+};
+
 const createProcess = (service, dispatch) => (data, processKey, businessKey) => {
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.postCreateProcess(data, processKey, businessKey).then(res => {
@@ -45,4 +53,18 @@ const createProcess = (service, dispatch) => (data, processKey, businessKey) => 
     });
 };
 
-export {createProcess, clearCreateErrorMessage, closeCreateModal};
+const getStartEventXml = (service, dispatch) => procDefinitionKey => {
+    dispatch({type: CREATE_PROCESS_REQUEST});
+    service.getXml(procDefinitionKey).then(res => {
+        let oParser = new DOMParser();
+        let oDOM = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
+        let creatingProcessFormData = [...oDOM.documentElement.firstElementChild.children]
+            .filter(el => el.nodeName === "bpmn:startEvent")[0].children;
+        // console.log("creatingProcessFormData", creatingProcessFormData)
+        dispatch(getStartEventXmlSuccess(creatingProcessFormData));
+    }).catch(err => {
+        err.data ? dispatch(createProcessFailure(err.data)) : dispatch(createProcessFailure(err));
+    });
+};
+
+export {createProcess, clearCreateErrorMessage, closeCreateModal, getStartEventXml};

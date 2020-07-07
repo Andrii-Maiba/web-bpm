@@ -3,13 +3,15 @@ import {
     CREATE_PROCESS_FAILURE,
     CREATE_PROCESS_SUCCESS,
     CLEAR_CREATE_ERROR_MESSAGE,
-    CLOSE_CREATE_MODAL
+    CLOSE_CREATE_MODAL,
+    GET_START_EVENT_XML_SUCCESS
 } from '../constants/createProcess';
 
 const updateProcessCreate = (state, action) => {
     if (typeof state === 'undefined') {
         return {
             loading: false,
+            xmlStartEventData: null,
             createProcessError: null,
             isCreated: false,
         };
@@ -17,14 +19,22 @@ const updateProcessCreate = (state, action) => {
     switch (action.type) {
         case CREATE_PROCESS_REQUEST:
             return {...state.processCreate, loading: true, isCreated: false};
+        case GET_START_EVENT_XML_SUCCESS:
+            return {
+                loading: false,
+                xmlStartEventData: action.payload,
+                createProcessError: null,
+                isCreated: false,
+            };
         case CREATE_PROCESS_SUCCESS:
             return {
                 loading: false,
+                xmlStartEventData: null,
                 createProcessError: null,
                 isCreated: true,
             };
         case CREATE_PROCESS_FAILURE:
-            return {loading: false, createProcessError: action.payload, isCreated: false};
+            return {...state.processCreate, loading: false, createProcessError: action.payload, isCreated: false};
         case CLEAR_CREATE_ERROR_MESSAGE:
             return {
                 ...state.processCreate,
@@ -32,7 +42,7 @@ const updateProcessCreate = (state, action) => {
                 isCreated: false,
             };
         case CLOSE_CREATE_MODAL:
-            return {loading: false, createProcessError: null, isCreated: false};
+            return {loading: false, xmlStartEventData: null, createProcessError: null, isCreated: false};
         default:
             return state.processCreate;
     }

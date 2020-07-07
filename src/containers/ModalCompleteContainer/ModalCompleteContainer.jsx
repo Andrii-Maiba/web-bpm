@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux';
 import FileBase64 from 'react-file-base64';
 import {Button, Header, Message, Modal, Loader, Dimmer, Form, Input} from 'semantic-ui-react';
@@ -12,6 +12,7 @@ import {
     getTaskAppData,
     openTask
 } from '../../actions/taskCompleteAction';
+import {takeChangedFormValues} from "../../utils/takeChangedDynamicFormValues";
 
 class ModalCompleteContainer extends Component {
     state = {modalOpen: false, isValidationError: false};
@@ -115,51 +116,7 @@ class ModalCompleteContainer extends Component {
     }
 
     handleChange = (event, id, type, value) => {
-        const formFields = this.state.data;
-        let isValidationError;
-        formFields.forEach(field => {
-            if (field.id === id && event.target.name === "string") {
-                field.value = event.target.value.toString();
-            }
-            if (field.id === id && type && type === "boolean") {
-                field.value = !value;
-            }
-            if (field.id === id && event.target.name === "long") {
-                if (isNaN(event.target.value) || event.target.value.toString().includes(" ")) {
-                    field.value = event.target.value;
-                    field.longValidationErr = "Please enter a number";
-                    isValidationError = true;
-                } else if (event.target.value.toString().includes(".")) {
-                    field.value = event.target.value;
-                    field.longValidationErr = "Please enter an integer";
-                    isValidationError = true;
-                } else {
-                    field.value = event.target.value;
-                    field.longValidationErr = null;
-                    isValidationError = false;
-                }
-            }
-            if (field.id === id && event.target.name === "double") {
-                if (isNaN(event.target.value) || event.target.value === "-0.00" || event.target.value.toString().includes(" ")) {
-                    field.value = event.target.value;
-                    field.doubleValidationErr = "Please enter a number";
-                    isValidationError = true;
-                } else if (!/^-?[0-9]+[.][0-9]{2}$/.test(event.target.value)) {
-                    field.value = event.target.value;
-                    field.doubleValidationErr = "Please enter a number with two decimal places";
-                    isValidationError = true;
-                } else {
-                    field.value = event.target.value;
-                    field.doubleValidationErr = null;
-                    isValidationError = false;
-                }
-            }
-            if (field.id === id && type && type === "enum") {
-                // console.log("select e.target.value", event.target.value)
-                field.value = event.target.value;
-            }
-            return field;
-        });
+        const [isValidationError, formFields] = takeChangedFormValues(this.state.data, event, id, type, value);
         this.setState({...this.state, isValidationError, data: [...formFields]});
     }
 
@@ -239,11 +196,11 @@ class ModalCompleteContainer extends Component {
                             } else if (el.type === "boolean") {
                                 return (<Form.Checkbox key={el.id} checked={el.value}
                                                        label={el.label[0].toUpperCase() + el.label.slice(1)}
-                                                       name={el.type}
                                                        onChange={e => this.handleChange(e, el.id, el.type, el.value)}
                                 />)
                             } else if (el.type === "file") {
-                                return (<div key={el.id}><label className="label">{el.label}</label>
+                                return (<Fragment key={el.id}>
+                                    <label className="label">{el.label}</label>
                                     {el.isFile ? <a className="complete__file-link"
                                                     download={el.fileName}
                                                     href={el.fileName}
@@ -253,16 +210,18 @@ class ModalCompleteContainer extends Component {
                                                         onDone={e => this.handleFileInputChange(e, el.id)}/>
                                             {(el.fileName !== "") ? el.fileName : "Choose a file"}
                                         </label>}
-                                </div>)
+                                </Fragment>)
                             } else if (el.type === "enum") {
-                                return (<Form.Field key={el.id} value={el.value} label={el.label} name={el.id}
+                                return (<Form.Field key={el.id}
+                                                    value={el.value}
+                                                    label={el.label}
                                                     onChange={e => this.handleChange(e, el.id, el.type)}
                                                     control='select'>
                                     {el.values.map(elem => <option key={elem.id.value}
                                                                    value={elem.id.value}>{elem.name.value}</option>)}
                                 </Form.Field>)
                             } else {
-                                return (<Form.Field key={el.id} required fluid width={8}
+                                return (<Form.Field key={el.id} fluid width={8}
                                                     control={Input}
                                                     label={el.label}
                                                     name={el.type}
@@ -286,11 +245,7 @@ class ModalCompleteContainer extends Component {
                             content='Complete'
                         />}
                     </Form>}
-                    {completeTaskError && <Message
-                        error
-                        header='An error occurred'
-                        content={completeTaskError}
-                    />}
+                    {completeTaskError && <Message error header='An error occurred' content={completeTaskError}/>}
                 </Modal.Content>
             </Modal>
         )
@@ -298,13 +253,7 @@ class ModalCompleteContainer extends Component {
 }
 
 const mapStateToProps = ({taskComplete: {loading, isComplete, completeTaskError, xmlData, openedTask}}) => {
-    return {
-        loading,
-        xmlData,
-        isComplete,
-        completeTaskError,
-        openedTask
-    };
+    return { loading, xmlData, isComplete, completeTaskError, openedTask };
 };
 
 const mapDispatchToProps = (dispatch, {services}) => {
@@ -317,6 +266,5 @@ const mapDispatchToProps = (dispatch, {services}) => {
         closeTask: () => dispatch(closeTask())
     };
 };
-
 
 export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCompleteContainer);
