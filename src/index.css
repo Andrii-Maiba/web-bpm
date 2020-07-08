@@ -95,3 +95,28 @@ input[type="file"] + .form__file-input-label * {
   text-transform: none;
   line-height: 1.4;
 }
+
+.ui.basic.blue.button, .ui.basic.blue.buttons .button {
+  box-shadow: 0 0 0 1px #85b7d9 inset!important;
+  color: rgba(0,0,0,.25)!important;
+}
+
+.ui.basic.blue.button:hover, .ui.basic.blue.buttons .button:hover {
+  background: #2185d0!important;
+  box-shadow: 0 0 0 1px #2185d0 inset!important;
+  color: #fff!important;
+}
+
+.ui.basic.blue.button:active, .ui.basic.blue.buttons .button:active {
+  color: #2185d0!important;
+  /*color: rgba(0,0,0,.95)!important;*/
+  box-shadow: 0 0 0 1px #85b7d9 inset!important;
+  /*background-color: rgba(0,0,0,.05)!important;*/
+  background-color: #f9fafb!important;
+}
+
+.ui.basic.blue.button:focus, .ui.basic.blue.buttons .button:focus {
+  color: #2185d0!important;
+  box-shadow: 0 0 0 1px #85b7d9 inset!important;
+  background-color: #f9fafb!important;
+}
