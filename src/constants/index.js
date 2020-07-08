@@ -1,1 +1,1 @@
-export const ENDPOINT_API_BASE = "/engine-rest/";
+export const ENDPOINT_API_BASE = "/api/engine-rest/";
