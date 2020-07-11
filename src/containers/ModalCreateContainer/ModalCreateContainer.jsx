@@ -9,16 +9,16 @@ import {
     clearCreateErrorMessage,
     closeCreateModal,
     getStartEventXml
-} from '../../actions/processCreateAction';
+} from '../../actions/createProcessAction';
 import {takeChangedFormValues} from '../../utils/takeChangedDynamicFormValues';
 
 class ModalCreateContainer extends Component {
-    state = {modalCreateOpen: false, isCreatingValidationErr: false}
+    state = {modalCreateOpen: false, isCreatingValidationError: false}
     creatingFormFields
 
     shouldComponentUpdate(nextProps) {
         if (nextProps.isCreated) {
-            this.setState({modalCreateOpen: false, amountValidationErr: null});
+            this.setState({modalCreateOpen: false, isCreatingValidationError: false});
             this.props.closeModal();
             return false;
         }
@@ -67,24 +67,24 @@ class ModalCreateContainer extends Component {
             this.setState({
                 modalCreateOpen: true,
                 data: this.getCreatingFormFieldsData(this.creatingFormFields),
-                isCreatingValidationErr: false
+                isCreatingValidationError: false
             });
         }
     }
 
     handleCreateModalOpen = () => {
         this.props.getStartEventXml();
-        this.setState({modalCreateOpen: true, amountValidationErr: null})
+        this.setState({modalCreateOpen: true, isCreatingValidationError: false})
     }
 
     handleCreateModalClose = () => {
-        this.setState({modalCreateOpen: false, amountValidationErr: null});
+        this.setState({modalCreateOpen: false, isCreatingValidationError: false});
         this.props.closeModal();
     }
 
     handleChange = (event, id, type, value) => {
         const [isValidationError, formFields] = takeChangedFormValues(this.state.data, event, id, type, value);
-        this.setState({...this.state, isValidationError, data: [...formFields]});
+        this.setState({...this.state, isCreatingValidationError: isValidationError, data: [...formFields]});
     }
 
     handleCreatingFileInputChange = (e, id) => {
@@ -196,7 +196,7 @@ class ModalCreateContainer extends Component {
                                 />)
                             }
                         })}
-                        {this.state.isValidationError ? <Form.Field
+                        {this.state.isCreatingValidationError ? <Form.Field
                             control={Button}
                             color="blue"
                             floated='right'

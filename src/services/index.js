@@ -139,6 +139,7 @@ class Services {
     }
 
     getTaskFileContent = id => {
+        // change into ${warrantyApplication}
         return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
             responseType: 'arraybuffer'
         }).catch(error => {

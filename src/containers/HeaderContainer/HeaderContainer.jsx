@@ -11,7 +11,7 @@ import {getUsersLocaleData} from '../../actions/usersLocaleDataAction';
 class HeaderNavContainer extends Component {
     render() {
         return (
-            <Menu fixed='top' fluid>
+            <Menu stackable fixed='top' fluid>
                 <Menu.Item href="/">
                     <Header as='h3' color='blue'>
                         <Image src={logo}/>Web BPM</Header>
@@ -35,7 +35,7 @@ class HeaderNavContainer extends Component {
                            activeClassName="active">
                     <Header as='h4'><FormattedMessage id="header.archive-link" defaultMessage="Архів"/></Header>
                 </Menu.Item>
-                <Menu.Item position='right'>
+                <Menu.Item position='right' borderless>
                     <Button.Group floated='right'>
                         {this.props.locale === "uk" ?
                             <Button attached='left' active compact basic color="blue" onClick={() => this.props.handleLangBtnClick("uk")}>UA</Button> :

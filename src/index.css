@@ -20,15 +20,6 @@ code {
   justify-content: space-between;
 }
 
-.flexStart {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.alertColor {
-  color: red;
-}
-
 .modalButton {
   padding-bottom: 35px;
   padding-top: 20px;
