@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux';
 import {Form, Input, Button, Header, Modal, Message, Dimmer, Loader} from 'semantic-ui-react';
+import {injectIntl} from "react-intl";
 import FileBase64 from 'react-file-base64';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
@@ -11,6 +12,8 @@ import {
     getStartEventXml
 } from '../../actions/createProcessAction';
 import {takeChangedFormValues} from '../../utils/takeChangedDynamicFormValues';
+import {createModalMessages} from './ModalCreateContainerMessages';
+import {validationMessages} from '../../utils/validationFormMessages';
 
 class ModalCreateContainer extends Component {
     state = {modalCreateOpen: false, isCreatingValidationError: false}
@@ -106,16 +109,16 @@ class ModalCreateContainer extends Component {
     }
 
     render() {
-        const {loading, createProcessError, clearErrorMessage} = this.props;
+        const {loading, createProcessError, clearErrorMessage, intl} = this.props;
         if (createProcessError) {
             setTimeout(() => clearErrorMessage(), 4000);
         }
         // console.log("state.data", this.state.data)
         return (
-            <Modal trigger={<Button color="blue" onClick={this.handleCreateModalOpen}>Create</Button>}
+            <Modal trigger={<Button color="blue" onClick={this.handleCreateModalOpen}>{intl.formatMessage(createModalMessages["button-open"])}</Button>}
                    open={this.state.modalCreateOpen}
                    onClose={this.handleCreateModalClose} closeIcon>
-                <Header color="blue" icon='add' content='Create Process'/>
+                <Header color="blue" icon='add' content={intl.formatMessage(createModalMessages.header)}/>
                 <Modal.Content>
                     {loading && <Dimmer active inverted><Loader inverted/></Dimmer>}
                     {this.state.data && <Form onSubmit={this.handleSubmit} error>
@@ -146,7 +149,7 @@ class ModalCreateContainer extends Component {
                                     // placeholder="0"
                                                     placeholder={el.value}
                                                     value={el.value}
-                                                    error={el.longValidationErr}
+                                                    error={el.longValidationErr && intl.formatMessage(validationMessages[`${el.longValidationErr}`])}
                                                     onChange={e => this.handleChange(e, el.id)}
                                 />)
                             } else if (el.type === "double") {
@@ -157,7 +160,7 @@ class ModalCreateContainer extends Component {
                                     // placeholder="0.00"
                                                     placeholder={el.value}
                                                     value={el.value}
-                                                    error={el.doubleValidationErr}
+                                                    error={el.doubleValidationErr && intl.formatMessage(validationMessages[`${el.doubleValidationErr}`])}
                                                     onChange={e => this.handleChange(e, el.id)}
                                 />)
                             } else if (el.type === "boolean") {
@@ -172,7 +175,7 @@ class ModalCreateContainer extends Component {
                                     <label key={el.id} className="form__file-input-label">
                                         <FileBase64 multiple={false}
                                                     onDone={e => this.handleCreatingFileInputChange(e, el.id)}/>
-                                        {(el.fileName !== "") ? el.fileName : "Choose a file"}
+                                        {(el.fileName !== "") ? el.fileName : intl.formatMessage(createModalMessages["input-file"])}
                                     </label>
                                 </Fragment>)
                             } else if (el.type === "enum") {
@@ -201,16 +204,16 @@ class ModalCreateContainer extends Component {
                             color="blue"
                             floated='right'
                             className="modalButton"
-                            content='New' disabled
+                            content={intl.formatMessage(createModalMessages["button-action"])} disabled
                         /> : <Form.Field
                             control={Button}
                             color="blue"
                             floated='right'
                             className="modalButton"
-                            content='New'
+                            content={intl.formatMessage(createModalMessages["button-action"])}
                         />}
                     </Form>}
-                    {createProcessError && <Message error header='An error occurred' content={createProcessError}/>}
+                    {createProcessError && <Message error header={intl.formatMessage(createModalMessages["error-header"])} content={createProcessError}/>}
                 </Modal.Content>
             </Modal>
         )
@@ -232,4 +235,4 @@ const mapDispatchToProps = (dispatch, {services}) => {
     };
 };
 
-export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCreateContainer);
+export default compose(injectIntl, withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCreateContainer);

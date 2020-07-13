@@ -1,5 +1,27 @@
 {
+  "app.nonexistent-page": "Сторінку не знайдено",
   "header.maker-tasklist-link": "Задачі Автора",
   "header.checker-tasklist-link": "Задачі Контролера",
-  "header.archive-link": "Архів"
+  "header.archive-link": "Архів",
+  "modalCreate.button-open": "Створити",
+  "modalCreate.header": "Створити Процес",
+  "modalCreate.input-file": "Виберіть файл",
+  "modalCreate.button-action": "Новий",
+  "modalCreate.error-header": "Сталась помилка",
+  "tasklistTable.filter-placeholder": "Фільтрувати за клієнтом",
+  "tasklistTable.table-header-taskname": "Задача",
+  "tasklistTable.table-header-customer": "Клієнт",
+  "tasklistTable.table-header-process-definition": "Процес",
+  "tasklistTable.table-header-amount": "Сума",
+  "tasklistTable.table-header-created": "Створено",
+  "tasklistTable.table-header-due": "До",
+  "tasklistTable.table-header-complete": "Виконати Задачу",
+  "validation.number-error": "Введіть число",
+  "validation.long-type-integer-error": "Введіть ціле число",
+  "validation.double-type-error": "Введіть число з двома десятковими знаками",
+  "modalComplete.button-open": "Відкрити",
+  "modalComplete.header": "Виконати Задачу",
+  "modalComplete.input-file": "Виберіть файл",
+  "modalComplete.button-action": "Виконати",
+  "modalComplete.error-header": "Сталась помилка"
 }

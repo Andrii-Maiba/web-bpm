@@ -1,14 +1,18 @@
 import React, {useState, useEffect} from "react";
 import {Icon, Menu, Table, Input, Loader, Dimmer} from "semantic-ui-react";
+import {useIntl} from 'react-intl';
 import ModalCompleteContainer from "../../containers/ModalCompleteContainer/ModalCompleteContainer";
 import ModalCreateContainer from "../../containers/ModalCreateContainer/ModalCreateContainer";
 import {outputAmountString} from "../../utils/outputAmountString";
+import {messages} from './TasklistTableMessages';
 
 const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, currentPartsPortion}) => {
     const [filterValue, setFilterValue] = useState('');
     useEffect(() => {
         setCurrentItemsPart(1, 1);
     }, [filterValue, setCurrentItemsPart]);
+
+    const intl = useIntl();
 
     let parts = [];
     const itemsPerPart = 5;
@@ -106,18 +110,19 @@ const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, cu
             <div className='flexBetween'>
                 <ModalCreateContainer/>
                 <Input value={filterValue} onChange={e => setFilterValue(e.target.value.toString())} focus icon='search'
-                       placeholder='Filter by customer'/>
+                       placeholder={intl.formatMessage(messages["filter-placeholder"])}
+                       className='tasklist__filter'/>
             </div>
             <Table>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell>Task Name</Table.HeaderCell>
-                        <Table.HeaderCell>Customer</Table.HeaderCell>
-                        <Table.HeaderCell>Process Definition</Table.HeaderCell>
-                        <Table.HeaderCell>Amount</Table.HeaderCell>
-                        <Table.HeaderCell>Created</Table.HeaderCell>
-                        <Table.HeaderCell>Due</Table.HeaderCell>
-                        <Table.HeaderCell>Complete Task</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-taskname"])}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-customer"])}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-process-definition"])}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-amount"])}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-created"])}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-due"])}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.formatMessage(messages["table-header-complete"])}</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>

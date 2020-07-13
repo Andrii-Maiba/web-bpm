@@ -1,5 +1,27 @@
 {
+  "app.nonexistent-page": "Page not found",
   "header.maker-tasklist-link": "Maker Tasklist",
   "header.checker-tasklist-link": "Checker Tasklist",
-  "header.archive-link": "Archive"
+  "header.archive-link": "Archive",
+  "modalCreate.button-open": "Create",
+  "modalCreate.header": "Create Process",
+  "modalCreate.input-file": "Choose a file",
+  "modalCreate.button-action": "New",
+  "modalCreate.error-header": "An error occurred",
+  "tasklistTable.filter-placeholder": "Filter by customer",
+  "tasklistTable.table-header-taskname": "Task Name",
+  "tasklistTable.table-header-customer": "Customer",
+  "tasklistTable.table-header-process-definition": "Process Definition",
+  "tasklistTable.table-header-amount": "Amount",
+  "tasklistTable.table-header-created": "Created",
+  "tasklistTable.table-header-due": "Due",
+  "tasklistTable.table-header-complete": "Complete Task",
+  "validation.number-error": "Enter a number",
+  "validation.long-type-integer-error": "Enter an integer",
+  "validation.double-type-integer-error": "Please enter a number with two decimal places",
+  "modalComplete.button-open": "Open",
+  "modalComplete.header": "Complete Task",
+  "modalComplete.input-file": "Choose a file",
+  "modalComplete.button-action": "Complete",
+  "modalComplete.error-header": "An error occurred"
 }

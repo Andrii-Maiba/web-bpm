@@ -10,11 +10,11 @@ export const takeChangedFormValues = (formFields, event, id, type, value) => {
         if (field.id === id && event.target.name === "long") {
             if (isNaN(event.target.value) || event.target.value.toString().includes(" ")) {
                 field.value = event.target.value;
-                field.longValidationErr = "Please enter a number";
+                field.longValidationErr = 'number-error';
                 isValidationError = true;
             } else if (event.target.value.toString().includes(".")) {
                 field.value = event.target.value;
-                field.longValidationErr = "Please enter an integer";
+                field.longValidationErr = 'long-type-integer-error';
                 isValidationError = true;
             } else {
                 field.value = event.target.value;
@@ -25,11 +25,11 @@ export const takeChangedFormValues = (formFields, event, id, type, value) => {
         if (field.id === id && event.target.name === "double") {
             if (isNaN(event.target.value) || event.target.value === "-0.00" || event.target.value.toString().includes(" ")) {
                 field.value = event.target.value;
-                field.doubleValidationErr = "Please enter a number";
+                field.doubleValidationErr = 'number-error';
                 isValidationError = true;
             } else if (!/^-?[0-9]+[.][0-9]{2}$/.test(event.target.value)) {
                 field.value = event.target.value;
-                field.doubleValidationErr = "Please enter a number with two decimal places";
+                field.doubleValidationErr = 'double-type-integer-error';
                 isValidationError = true;
             } else {
                 field.value = event.target.value;

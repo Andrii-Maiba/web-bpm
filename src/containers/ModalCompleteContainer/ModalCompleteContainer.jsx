@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux';
 import FileBase64 from 'react-file-base64';
+import {injectIntl} from "react-intl";
 import {Button, Header, Message, Modal, Loader, Dimmer, Form, Input} from 'semantic-ui-react';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
@@ -13,6 +14,8 @@ import {
     openTask
 } from '../../actions/taskCompleteAction';
 import {takeChangedFormValues} from "../../utils/takeChangedDynamicFormValues";
+import {completeModalMessages} from './ModalCompleteContainerMessages';
+import {validationMessages} from '../../utils/validationFormMessages';
 
 class ModalCompleteContainer extends Component {
     state = {modalOpen: false, isValidationError: false};
@@ -28,20 +31,22 @@ class ModalCompleteContainer extends Component {
             if (el.attributes.type.value === "long") {
                 fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : 0;
                 if (this.state.task[fieldData.id].value.toString().includes(".")) {
-                    fieldData.longValidationErr = "Please enter an integer";
+                    fieldData.longValidationErr = 'long-type-integer-error';
                     // isValidationError = true; //make submit button not active
-                } else {
-                    fieldData.longValidationErr = null;
                 }
+                // else {
+                //     fieldData.longValidationErr = null;
+                // }
             }
             if (el.attributes.type.value === "double") {
                 fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : 0.00;
                 if (!/^-?[0-9]+[.][0-9]{2}$/.test(this.state.task[fieldData.id].value)) {
-                    fieldData.doubleValidationErr = "Please enter a number with two decimal places";
+                    fieldData.doubleValidationErr = 'double-type-error';
                     // isValidationError = true; //make submit button not active
-                } else {
-                    fieldData.doubleValidationErr = null;
                 }
+                // else {
+                //     fieldData.doubleValidationErr = null;
+                // }
             }
             if (el.attributes.type.value === "file") {
                 fieldData.value = '';
@@ -144,15 +149,15 @@ class ModalCompleteContainer extends Component {
     }
 
     render() {
-        const {loading, completeTaskError, clearErrorMessage} = this.props;
+        const {loading, completeTaskError, clearErrorMessage, intl} = this.props;
         if (completeTaskError) {
             setTimeout(() => clearErrorMessage(), 4000);
         }
         return (
-            <Modal trigger={<Button color="blue" onClick={this.handleOpen}>Open</Button>}
+            <Modal trigger={<Button color="blue" onClick={this.handleOpen}>{intl.formatMessage(completeModalMessages["button-open"])}</Button>}
                    open={this.state.modalOpen}
                    onClose={this.handleClose} closeIcon>
-                <Header color="blue" icon='check circle outline' content='Complete Task'/>
+                <Header color="blue" icon='check circle outline' content={intl.formatMessage(completeModalMessages.header)}/>
                 <Modal.Content>
                     {loading && <Dimmer active inverted><Loader inverted/></Dimmer>}
                     {this.state.data && <Form onSubmit={this.handleSubmit} error>
@@ -180,7 +185,7 @@ class ModalCompleteContainer extends Component {
                                                     name={el.type}
                                                     placeholder="0"
                                                     value={el.value}
-                                                    error={el.longValidationErr}
+                                                    error={el.longValidationErr && intl.formatMessage(validationMessages[`${el.longValidationErr}`])}
                                                     onChange={e => this.handleChange(e, el.id)}
                                 />)
                             } else if (el.type === "double") {
@@ -190,7 +195,7 @@ class ModalCompleteContainer extends Component {
                                                     name={el.type}
                                                     placeholder="0.00"
                                                     value={el.value}
-                                                    error={el.doubleValidationErr}
+                                                    error={el.doubleValidationErr && intl.formatMessage(validationMessages[`${el.doubleValidationErr}`])}
                                                     onChange={e => this.handleChange(e, el.id)}
                                 />)
                             } else if (el.type === "boolean") {
@@ -208,7 +213,7 @@ class ModalCompleteContainer extends Component {
                                         <label key={el.id} className="form__file-input-label">
                                             <FileBase64 multiple={false}
                                                         onDone={e => this.handleFileInputChange(e, el.id)}/>
-                                            {(el.fileName !== "") ? el.fileName : "Choose a file"}
+                                            {(el.fileName !== "") ? el.fileName : intl.formatMessage(completeModalMessages["input-file"])}
                                         </label>}
                                 </Fragment>)
                             } else if (el.type === "enum") {
@@ -236,16 +241,16 @@ class ModalCompleteContainer extends Component {
                             color="blue"
                             floated='right'
                             className="modalButton"
-                            content='Complete' disabled
+                            content={intl.formatMessage(completeModalMessages["button-action"])} disabled
                         /> : <Form.Field
                             control={Button}
                             color="blue"
                             floated='right'
                             className="modalButton"
-                            content='Complete'
+                            content={intl.formatMessage(completeModalMessages["button-action"])}
                         />}
                     </Form>}
-                    {completeTaskError && <Message error header='An error occurred' content={completeTaskError}/>}
+                    {completeTaskError && <Message error header={intl.formatMessage(completeModalMessages["error-header"])} content={completeTaskError}/>}
                 </Modal.Content>
             </Modal>
         )
@@ -267,4 +272,4 @@ const mapDispatchToProps = (dispatch, {services}) => {
     };
 };
 
-export default compose(withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCompleteContainer);
+export default compose(injectIntl, withServices(), connect(mapStateToProps, mapDispatchToProps))(ModalCompleteContainer);
