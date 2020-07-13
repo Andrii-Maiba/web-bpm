@@ -1,0 +1,30 @@
+.menu__item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu__header {
+    margin-bottom: 0!important;
+}
+
+.menu__content-stacked {
+    display: none!important;
+}
+
+@media (max-width: 767px) {
+    .menu__item-lang {
+        display: none!important;
+    }
+
+    .menu__content-stacked {
+        display: block!important;
+    }
+
+    .menu__buttons-lang-stacked {
+        margin-right: 15px!important;
+    }
+
+    .menu__item-stackable {
+        display: none!important;
+    }
+}
