@@ -45,7 +45,13 @@ class ModalCreateContainer extends Component {
                 fieldData.fileName = "";
             }
             if (el.attributes.type.value === "boolean") {
-                fieldData.value = el.attributes.defaultValue ? el.attributes.defaultValue.value : false;
+                let booleanDefaultValue;
+                if (el.attributes.defaultValue) {
+                    const defaultValueString = el.attributes.defaultValue.value;
+                    booleanDefaultValue = (defaultValueString == String(defaultValueString ? true : false)) ?
+                        (defaultValueString ? true : false) : (!defaultValueString ? true : false);
+                }
+                fieldData.value = el.attributes.defaultValue ? booleanDefaultValue : false;
             }
             if (el.attributes.type.value === "enum") {
                 const enumValues = [...el.attributes.id.ownerElement.children];

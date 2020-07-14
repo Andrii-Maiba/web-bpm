@@ -20,7 +20,7 @@ class HeaderNavContainer extends Component {
     render() {
         return (
             <Menu stackable fixed='top' fluid>
-                <Menu.Item href="/" className="item menu__item">
+                <Menu.Item href="/" className="item menu__item menu__item-first">
                     <Header as='h3' className="menu__header" color='blue'><Image src={logo}/>Web BPM</Header>
                     <div className='menu__content-stacked'>
                         <Button.Group className='menu__buttons-lang-stacked'>
@@ -35,9 +35,9 @@ class HeaderNavContainer extends Component {
                                 <Button attached='right' compact basic color="blue"
                                         onClick={() => this.props.handleLangBtnClick("en")}>EN</Button>}
                         </Button.Group>
-                        {this.state.isStackedMenu ? <Icon color='blue' size='large' name='bars'
+                        {this.state.isStackedMenu ? <Icon color='blue' size='large' name='bars' className='menu__icon-stackable'
                                                           onClick={e => this.handleMenuStackedIconClick(e)}/> :
-                            <Icon color='blue' size='large' name='close'
+                            <Icon color='blue' size='large' name='close' className='menu__icon-stackable'
                                   onClick={e => this.handleMenuStackedIconClick(e)}/>}
                     </div>
                 </Menu.Item>
@@ -49,7 +49,7 @@ class HeaderNavContainer extends Component {
                     </Header>
                 </Menu.Item> : <Menu.Item exact as={NavLink} to="/"
                                           className="item"
-                                          activeClassName="active">
+                                          activeClassName="active" onClick={() => this.setState({isStackedMenu: true})}>
                     <Header as='h4'>
                         <FormattedMessage id="header.maker-tasklist-link" defaultMessage="Задачі Менеджера"/>
                     </Header>
@@ -62,7 +62,7 @@ class HeaderNavContainer extends Component {
                     </Header>
                 </Menu.Item> : <Menu.Item as={NavLink} to="/checker"
                                           className="item"
-                                          activeClassName="active">
+                                          activeClassName="active" onClick={() => this.setState({isStackedMenu: true})}>
                     <Header as='h4'>
                         <FormattedMessage id="header.checker-tasklist-link" defaultMessage="Задачі Контролера"/>
                     </Header>
@@ -73,7 +73,7 @@ class HeaderNavContainer extends Component {
                     <Header as='h4'><FormattedMessage id="header.archive-link" defaultMessage="Архів"/></Header>
                 </Menu.Item> : <Menu.Item as={NavLink} to="/archive"
                                           className="item"
-                                          activeClassName="active">
+                                          activeClassName="active" onClick={() => this.setState({isStackedMenu: true})}>
                     <Header as='h4'><FormattedMessage id="header.archive-link" defaultMessage="Архів"/></Header>
                 </Menu.Item>}
                 <Menu.Item position='right' className="item menu__item-lang">

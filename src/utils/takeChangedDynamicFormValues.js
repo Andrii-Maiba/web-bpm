@@ -18,7 +18,6 @@ export const takeChangedFormValues = (formFields, event, id, type, value) => {
                 isValidationError = true;
             } else {
                 field.value = event.target.value;
-                field.longValidationErr = null;
                 isValidationError = false;
             }
         }
@@ -33,7 +32,6 @@ export const takeChangedFormValues = (formFields, event, id, type, value) => {
                 isValidationError = true;
             } else {
                 field.value = event.target.value;
-                field.doubleValidationErr = null;
                 isValidationError = false;
             }
         }

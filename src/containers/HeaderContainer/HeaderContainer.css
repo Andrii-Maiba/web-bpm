@@ -12,6 +12,19 @@
 }
 
 @media (max-width: 767px) {
+    .menu__item-first:hover {
+        cursor: default!important;
+        background-color: rgba(0, 0, 0, 0)!important;
+    }
+
+    .menu__header:hover {
+        cursor: pointer;
+    }
+
+    .menu__icon-stackable:hover {
+        cursor: pointer;
+    }
+
     .menu__item-lang {
         display: none!important;
     }

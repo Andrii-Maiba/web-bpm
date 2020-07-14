@@ -63,9 +63,9 @@ const postCompleteTask = (service, dispatch) => (id, formData) => {
     });
 };
 
-const getTaskAppData = (service, dispatch) => (id, fileName) => {
+const getTaskAppData = (service, dispatch) => (id, fileName, fileVariableId) => {
     dispatch({type: COMPLETE_TASK_REQUEST});
-    service.getTaskFileContent(id).then(res => {
+    service.getTaskFileContent(id, fileVariableId).then(res => {
         let blob = new Blob([res.data]);
         saveAs(blob, fileName);
         dispatch({type: GET_FILE_DATA_SUCCESS});

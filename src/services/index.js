@@ -118,7 +118,7 @@ class Services {
                 variables[el.id] = {value: el.value, type: el.type};
             }
         });
-        // console.log(" createProcessReqBodyVars", variables)
+        // console.log("createProcessReqBodyVars", variables)
         return axios.post(this._baseUrl + `engine/default/process-definition/key/${processKey}/start`, {
             variables,
             businessKey,
@@ -138,9 +138,8 @@ class Services {
         })
     }
 
-    getTaskFileContent = id => {
-        // change into ${warrantyApplication}
-        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/warrantyApplication/data`, {
+    getTaskFileContent = (id, fileVariableId) => {
+        return axios.get(this._baseUrl + `engine/default/task/${id}/variables/${fileVariableId}/data`, {
             responseType: 'arraybuffer'
         }).catch(error => {
             const err = (new Error('Something went wrong'));
