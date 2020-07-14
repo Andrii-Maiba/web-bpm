@@ -9,7 +9,7 @@ import {
 } from '../constants/completeTask';
 import {DELETE_TASK} from '../constants/tasklist';
 import {saveAs} from 'file-saver';
-import {Blob} from 'blob-polyfill';
+// import {Blob} from 'blob-polyfill';
 
 const deleteTask = id => {
     return {
@@ -88,4 +88,6 @@ const getXml = (service, dispatch) => (procDefinitionKey, taskDefinitionKey) => 
     });
 };
 
-export {postCompleteTask, clearErrorMessage, closeTask, getXml, getTaskAppData, openTask};
+export {postCompleteTask, clearErrorMessage, closeTask, getXml,
+    getTaskAppData,
+    openTask};
