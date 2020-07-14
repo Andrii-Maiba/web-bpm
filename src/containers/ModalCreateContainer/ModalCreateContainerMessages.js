@@ -7,15 +7,15 @@ export const createModalMessages = defineMessages({
     },
     "header": {
         id: "modalCreate.header",
-        defaultMessage: "Створити Процес"
+        defaultMessage: "Новий Процес"
     },
     "input-file": {
         id: "modalCreate.input-file",
-        defaultMessage: "Виберіть файл"
+        defaultMessage: "Вибрати файл"
     },
     "button-action": {
         id: "modalCreate.button-action",
-        defaultMessage: "Новий"
+        defaultMessage: "Створити"
     },
     "error-header": {
         id: "modalCreate.error-header",

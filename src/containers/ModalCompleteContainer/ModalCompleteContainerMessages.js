@@ -11,7 +11,7 @@ export const completeModalMessages = defineMessages({
     },
     "input-file": {
         id: "modalComplete.input-file",
-        defaultMessage: "Виберіть файл"
+        defaultMessage: "Вибрати файл"
     },
     "button-action": {
         id: "modalComplete.button-action",

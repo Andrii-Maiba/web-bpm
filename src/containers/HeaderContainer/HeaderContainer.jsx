@@ -45,13 +45,13 @@ class HeaderNavContainer extends Component {
                            className="item menu__item-stackable"
                            activeClassName="active">
                     <Header as='h4'>
-                        <FormattedMessage id="header.maker-tasklist-link" defaultMessage="Задачі Автора"/>
+                        <FormattedMessage id="header.maker-tasklist-link" defaultMessage="Задачі Менеджера"/>
                     </Header>
                 </Menu.Item> : <Menu.Item exact as={NavLink} to="/"
                                           className="item"
                                           activeClassName="active">
                     <Header as='h4'>
-                        <FormattedMessage id="header.maker-tasklist-link" defaultMessage="Задачі Автора"/>
+                        <FormattedMessage id="header.maker-tasklist-link" defaultMessage="Задачі Менеджера"/>
                     </Header>
                 </Menu.Item>}
                 {this.state.isStackedMenu ? <Menu.Item as={NavLink} to="/checker"
