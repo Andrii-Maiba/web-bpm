@@ -11,10 +11,19 @@
     display: none!important;
 }
 
-@media (max-width: 767px) {
+@media only screen and (max-width: 767px) {
+    .menu__item-first {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
     .menu__item-first:hover {
         cursor: default!important;
         background-color: rgba(0, 0, 0, 0)!important;
+    }
+
+    .menu__header {
     }
 
     .menu__header:hover {

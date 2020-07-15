@@ -11,8 +11,7 @@ import Services from './services';
 import {ServiceProvider} from './components/ServicesContext';
 import AppContainer from './containers/AppContainer/AppContainer';
 import 'semantic-ui-css/semantic.min.css';
-import './index.css';
-
+import './index.scss';
 const services = new Services();
 
 ReactDOM.render(

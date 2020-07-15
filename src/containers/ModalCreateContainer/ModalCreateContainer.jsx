@@ -29,7 +29,7 @@ class ModalCreateContainer extends Component {
     }
 
     getCreatingFormFieldsData = (formDataFields, formData = []) => {
-        [...formDataFields].forEach(el => {
+        Array.from(formDataFields).forEach(el => {
             let fieldData = {};
             fieldData.id = el.attributes.id.value;
             if (el.attributes.type.value === "string") {
@@ -48,13 +48,13 @@ class ModalCreateContainer extends Component {
                 let booleanDefaultValue;
                 if (el.attributes.defaultValue) {
                     const defaultValueString = el.attributes.defaultValue.value;
-                    booleanDefaultValue = (defaultValueString == String(defaultValueString ? true : false)) ?
-                        (defaultValueString ? true : false) : (!defaultValueString ? true : false);
+                    // eslint-disable-next-line
+                    booleanDefaultValue = (defaultValueString == String(defaultValueString ? true : false)) ? (defaultValueString ? true : false) : (!defaultValueString ? true : false);
                 }
                 fieldData.value = el.attributes.defaultValue ? booleanDefaultValue : false;
             }
             if (el.attributes.type.value === "enum") {
-                const enumValues = [...el.attributes.id.ownerElement.children];
+                const enumValues = Array.from(el.attributes.id.ownerElement.children);
                 fieldData.values = [];
                 enumValues.forEach(el => {
                     fieldData.values.push(el.attributes);
@@ -71,7 +71,7 @@ class ModalCreateContainer extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.xmlStartEventData !== this.props.xmlStartEventData && prevProps.xmlStartEventData === null) {
-            this.creatingFormFields = [...this.props.xmlStartEventData].find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
+            this.creatingFormFields = Array.from(this.props.xmlStartEventData).find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
             // console.log("creatingFormFields", this.creatingFormFields)
             this.setState({
                 modalCreateOpen: true,
