@@ -114,11 +114,15 @@ class Services {
                 if (el.value !== "") {
                     variables[el.id] = {value: el.value.trim(), type: el.type};
                 }
+            } else if (el.type === "long" || el.type === "double") {
+                if (el.value !== "") {
+                    variables[el.id] = {value: Number(el.value), type: el.type};
+                }
             } else {
                 variables[el.id] = {value: el.value, type: el.type};
             }
         });
-        // console.log("createProcessReqBodyVars", variables)
+        // console.dir(variables);
         return axios.post(this._baseUrl + `engine/default/process-definition/key/${processKey}/start`, {
             variables,
             businessKey,

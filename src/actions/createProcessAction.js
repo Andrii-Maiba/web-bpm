@@ -45,6 +45,7 @@ const createProcess = (service, dispatch) => (data, processKey, businessKey) => 
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.postCreateProcess(data, processKey, businessKey).then(res => {
         dispatch({type: CREATE_PROCESS_SUCCESS});
+        // console.dir(res.status)
         res && service.getTaskData(res.data.id).then(result => {
             dispatch(createTaskSuccess(res.data.variables, result.data[0]));
         });
@@ -56,13 +57,16 @@ const createProcess = (service, dispatch) => (data, processKey, businessKey) => 
 const getStartEventXml = (service, dispatch) => procDefinitionKey => {
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.getXml(procDefinitionKey).then(res => {
+        // console.dir(res.data.bpmn20Xml);
         let oParser = new DOMParser();
-        let oDOM = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
-        let creatingProcessFormData = Array.from(oDOM.documentElement.firstElementChild.children).filter(el => el.nodeName === "bpmn:startEvent")[0].children;
-        // console.log("creatingProcessFormData", creatingProcessFormData)
+        let xmlDoc = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
+        // console.dir(xmlDoc.documentElement.firstElementChild.childNodes)
+        // let creatingProcessFormData = Array.from(xmlDoc.documentElement.firstElementChild.childNodes).filter(el => el.nodeName === "bpmn:startEvent")[0].children;
+        let creatingProcessFormData = Array.from(xmlDoc.documentElement.firstElementChild.childNodes).filter(el => el.nodeName === "bpmn:startEvent")[0].childNodes;
+        // console.dir(creatingProcessFormData)
         dispatch(getStartEventXmlSuccess(creatingProcessFormData));
     }).catch(err => {
-        // console.log("getXml err", err);
+        // console.dir(err.stack);
         err.data ? dispatch(createProcessFailure(err.data)) : dispatch(createProcessFailure(err));
     });
 };

@@ -29,40 +29,49 @@ class ModalCreateContainer extends Component {
     }
 
     getCreatingFormFieldsData = (formDataFields, formData = []) => {
-        Array.from(formDataFields).forEach(el => {
+        // console.dir(Array.from(formDataFields).filter(el => el.nodeName === "camunda:formField"))
+        Array.from(formDataFields).filter(el => el.nodeName === "camunda:formField").forEach(el => {
+            let attributes = Array.from(el.attributes);
+            let type = attributes.find(el => el.nodeName === "type").nodeValue;
+            let id = attributes.find(el => el.nodeName === "id").nodeValue;
+            let label = attributes.find(el => el.nodeName === "label").nodeValue;
+            let defaultValueString = attributes.find(el => el.nodeName === "defaultValue");
             let fieldData = {};
-            fieldData.id = el.attributes.id.value;
-            if (el.attributes.type.value === "string") {
-                fieldData.value = el.attributes.defaultValue ? el.attributes.defaultValue.value : '';
+            fieldData.type = type;
+            fieldData.id = id;
+            fieldData.label = label;
+            if (type === "string") {
+                fieldData.value = defaultValueString !== undefined ? defaultValueString.nodeValue : '';
             }
-            if (el.attributes.type.value === "long") {
-                fieldData.value = el.attributes.defaultValue ? el.attributes.defaultValue.value : 0;
+            if (type === "long") {
+                fieldData.value = defaultValueString !== undefined ? Number(defaultValueString.nodeValue) : 0;
             }
-            if (el.attributes.type.value === "double") {
-                fieldData.value = el.attributes.defaultValue ? el.attributes.defaultValue.value : 0.00;
+            if (type === "double") {
+                fieldData.value = defaultValueString !== undefined ? Number(defaultValueString.nodeValue) : 0.00;
             }
-            if (el.attributes.type.value === "file") {
+            if (type === "file") {
                 fieldData.fileName = "";
             }
-            if (el.attributes.type.value === "boolean") {
+            if (type === "boolean") {
                 let booleanDefaultValue;
-                if (el.attributes.defaultValue) {
-                    const defaultValueString = el.attributes.defaultValue.value;
+                if (defaultValueString !== undefined) {
+                    const defaultNodeValue = defaultValueString.nodeValue;
                     // eslint-disable-next-line
-                    booleanDefaultValue = (defaultValueString == String(defaultValueString ? true : false)) ? (defaultValueString ? true : false) : (!defaultValueString ? true : false);
+                    booleanDefaultValue = (defaultNodeValue == String(defaultNodeValue ? true : false)) ? (defaultNodeValue ? true : false) : (!defaultNodeValue ? true : false);
                 }
-                fieldData.value = el.attributes.defaultValue ? booleanDefaultValue : false;
+                fieldData.value = defaultValueString !== undefined ? booleanDefaultValue : false;
             }
-            if (el.attributes.type.value === "enum") {
-                const enumValues = Array.from(el.attributes.id.ownerElement.children);
+            if (type === "enum") {
+                const enumValues = Array.from(attributes.find(el => el.nodeName === "id").ownerElement.childNodes).filter(el => el.nodeName === "camunda:value");
                 fieldData.values = [];
                 enumValues.forEach(el => {
-                    fieldData.values.push(el.attributes);
+                    let enumValueName = Array.from(el.attributes).find(el => el.nodeName === "name").nodeValue;
+                    let enumValueId = Array.from(el.attributes).find(el => el.nodeName === "id").nodeValue;
+                    fieldData.values.push({enumValueId, enumValueName});
+                    // console.dir(enumValue.nodeValue)
                 })
-                fieldData.value = el.attributes.defaultValue ? el.attributes.defaultValue.value : fieldData.values[0].id.value;
+                fieldData.value = defaultValueString !== undefined ? defaultValueString.nodeValue : fieldData.values[0].enumValueId;
             }
-            fieldData.type = el.attributes.type.value;
-            fieldData.label = el.attributes.label.value;
             formData.push(fieldData);
         });
         // console.log("formValues", formData);
@@ -71,8 +80,9 @@ class ModalCreateContainer extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.xmlStartEventData !== this.props.xmlStartEventData && prevProps.xmlStartEventData === null) {
-            this.creatingFormFields = Array.from(this.props.xmlStartEventData).find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
-            // console.log("creatingFormFields", this.creatingFormFields)
+            // this.creatingFormFields = Array.from(this.props.xmlStartEventData).find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
+            this.creatingFormFields = Array.from(this.props.xmlStartEventData).find(el => el.nodeName === "bpmn:extensionElements").childNodes[1].childNodes;
+            // console.dir(this.creatingFormFields)
             this.setState({
                 modalCreateOpen: true,
                 data: this.getCreatingFormFieldsData(this.creatingFormFields),
@@ -121,7 +131,8 @@ class ModalCreateContainer extends Component {
         }
         // console.log("state.data", this.state.data)
         return (
-            <Modal trigger={<Button color="blue" onClick={this.handleCreateModalOpen}>{intl.formatMessage(createModalMessages["button-open"])}</Button>}
+            <Modal trigger={<Button color="blue"
+                                    onClick={this.handleCreateModalOpen}>{intl.formatMessage(createModalMessages["button-open"])}</Button>}
                    open={this.state.modalCreateOpen}
                    onClose={this.handleCreateModalClose} closeIcon>
                 <Header color="blue" icon='add' content={intl.formatMessage(createModalMessages.header)}/>
@@ -190,8 +201,8 @@ class ModalCreateContainer extends Component {
                                                     label={el.label}
                                                     onChange={e => this.handleChange(e, el.id, el.type)}
                                                     control='select'>
-                                    {el.values.map(elem => <option key={elem.id.value}
-                                                                   value={elem.id.value}>{elem.name.value}</option>)}
+                                    {el.values.map(elem => <option key={elem.enumValueId}
+                                                                   value={elem.enumValueId}>{elem.enumValueName}</option>)}
                                 </Form.Field>)
                             } else {
                                 return (<Form.Field key={el.id} fluid width={8}
@@ -219,7 +230,9 @@ class ModalCreateContainer extends Component {
                             content={intl.formatMessage(createModalMessages["button-action"])}
                         />}
                     </Form>}
-                    {createProcessError && <Message error header={intl.formatMessage(createModalMessages["error-header"])} content={createProcessError}/>}
+                    {createProcessError &&
+                    <Message error header={intl.formatMessage(createModalMessages["error-header"])}
+                             content={createProcessError}/>}
                 </Modal.Content>
             </Modal>
         )

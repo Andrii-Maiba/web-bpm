@@ -13,9 +13,9 @@
 
 @media only screen and (max-width: 767px) {
     .menu__item-first {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        display: flex!important;
+        justify-content: space-between!important;
+        flex-wrap: wrap!important;
     }
 
     .menu__item-first:hover {
