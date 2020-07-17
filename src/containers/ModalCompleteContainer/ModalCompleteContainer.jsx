@@ -84,7 +84,9 @@ class ModalCompleteContainer extends Component {
                     const defaultValue = defaultValueString.nodeValue;
                     defaultValueName = defaultValue.substring(defaultValue.indexOf('{') + 1, defaultValue.indexOf('}'));
                 }
+                // console.dir(this.state.task[defaultValueName].value)
                 fieldData.value = this.state.task[defaultValueName] ? this.state.task[defaultValueName].value : fieldData.values[0].enumValueId;
+                // console.dir(fieldData.value)
             }
             formValues.push(fieldData);
         });

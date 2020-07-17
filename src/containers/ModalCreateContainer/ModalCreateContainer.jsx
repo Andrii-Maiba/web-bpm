@@ -69,7 +69,9 @@ class ModalCreateContainer extends Component {
                     fieldData.values.push({enumValueId, enumValueName});
                     // console.dir(enumValue.nodeValue)
                 })
+                // console.dir(attributes)
                 fieldData.value = defaultValueString !== undefined ? defaultValueString.nodeValue : fieldData.values[0].enumValueId;
+                // console.dir(fieldData.value)
             }
             formData.push(fieldData);
         });
