@@ -57,13 +57,10 @@ const createProcess = (service, dispatch) => (data, processKey, businessKey) => 
 const getStartEventXml = (service, dispatch) => procDefinitionKey => {
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.getXml(procDefinitionKey).then(res => {
-        // console.dir(res.data.bpmn20Xml);
         let oParser = new DOMParser();
         let xmlDoc = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
-        // console.dir(xmlDoc.documentElement.firstElementChild.childNodes)
-        // let creatingProcessFormData = Array.from(xmlDoc.documentElement.firstElementChild.childNodes).filter(el => el.nodeName === "bpmn:startEvent")[0].children;
-        let creatingProcessFormData = Array.from(xmlDoc.documentElement.firstElementChild.childNodes).filter(el => el.nodeName === "bpmn:startEvent")[0].childNodes;
-        // console.dir(creatingProcessFormData)
+        let creatingProcessFormData = Array.from(xmlDoc.documentElement.firstElementChild.childNodes)
+            .find(el => el.nodeName === "bpmn:startEvent").childNodes;
         dispatch(getStartEventXmlSuccess(creatingProcessFormData));
     }).catch(err => {
         // console.dir(err.stack);

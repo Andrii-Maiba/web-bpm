@@ -22,60 +22,70 @@ class ModalCompleteContainer extends Component {
     formDataFields;
 
     getFormValues = (formDataFields, formValues = []) => {
-        [...formDataFields].forEach(el => {
+        // console.dir(formDataFields);
+        Array.from(formDataFields).filter(el => el.nodeName === "camunda:formField").forEach(el => {
+            let attributes = Array.from(el.attributes);
+            let type = attributes.find(el => el.nodeName === "type").nodeValue;
+            let id = attributes.find(el => el.nodeName === "id").nodeValue;
+            let label = attributes.find(el => el.nodeName === "label").nodeValue;
+            const defaultValueString = attributes.find(el => el.nodeName === "defaultValue");
             let fieldData = {};
-            fieldData.id = el.attributes.id.value;
-            if (el.attributes.type.value === "string") {
-                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : '';
+            fieldData.type = type;
+            fieldData.id = id;
+            fieldData.label = label;
+            if (type === "string") {
+                fieldData.value = this.state.task[id] ? this.state.task[id].value : '';
             }
-            if (el.attributes.type.value === "long") {
-                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : 0;
-                if (this.state.task[fieldData.id].value.toString().includes(".")) {
+            if (type === "long") {
+                fieldData.value = this.state.task[id] ? this.state.task[id].value : 0;
+                if (this.state.task[id].value.toString().includes(".")) {
                     fieldData.longValidationErr = 'long-type-integer-error';
                     // isValidationError = true; //make submit button not active
                 }
             }
-            if (el.attributes.type.value === "double") {
-                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : 0.00;
-                if (!/^-?[0-9]+[.][0-9]{2}$/.test(this.state.task[fieldData.id].value)) {
+            if (type === "double") {
+                fieldData.value = this.state.task[id] ? this.state.task[id].value : 0.00;
+                if (!/^-?[0-9]+[.][0-9]{2}$/.test(this.state.task[id].value)) {
                     fieldData.doubleValidationErr = 'double-type-error';
                     // isValidationError = true; //make submit button not active
                 }
             }
-            if (el.attributes.type.value === "file") {
+            if (type === "file") {
                 fieldData.value = '';
-                if (this.state.task[fieldData.id] !== undefined && this.state.task[fieldData.id].type === "File") {
-                    fieldData.fileName = this.state.task[fieldData.id].valueInfo.filename;
+                if (this.state.task[id] !== undefined && this.state.task[id].type === "File") {
+                    fieldData.fileName = this.state.task[id].valueInfo.filename;
                     fieldData.isFile = true;
                 } else {
                     fieldData.fileName = "";
                     fieldData.isFile = false;
                 }
             }
-            if (el.attributes.type.value === "boolean") {
-                fieldData.value = this.state.task[fieldData.id] ? this.state.task[fieldData.id].value : false;
+            if (type === "boolean") {
+                fieldData.value = this.state.task[id] ? this.state.task[id].value : false;
                 // let defaultVal;
-                // if (el.attributes.defaultValue) {
-                //     const defaultValue = el.attributes.defaultValue.value;
+                // if (defaultValueString !== undefined) {
+                //     const defaultValue = defaultValueString.nodeValue;
+                //defaultVal = (defaultValue == String(defaultValue ? true : false)) ? (defaultValue ? true : false) : (!defaultValue ? true : false)
                 //     defaultVal = defaultValue.substring(defaultValue.indexOf('{') + 1, defaultValue.indexOf('}'));
                 // }
-                // console.log("defaultVal", this.state.task[fieldData.id].value, defaultVal)
+                //fieldData.value = defaultValueString !== undefined ? defaultVal : false;
+                // console.log("defaultVal", this.state.task[id].value, defaultVal)
             }
-            if (el.attributes.type.value === "enum") {
-                const enumValues = [...el.attributes.id.ownerElement.children];
+            if (type === "enum") {
+                const enumValues = Array.from(attributes.find(el => el.nodeName === "id").ownerElement.childNodes).filter(el => el.nodeName === "camunda:value");
                 fieldData.values = [];
                 enumValues.forEach(el => {
-                    fieldData.values.push(el.attributes);
+                    let enumValueName = Array.from(el.attributes).find(el => el.nodeName === "name").nodeValue;
+                    let enumValueId = Array.from(el.attributes).find(el => el.nodeName === "id").nodeValue;
+                    fieldData.values.push({enumValueId, enumValueName});
                 })
                 let defaultValueName;
-                if (el.attributes.defaultValue) {
-                    const defaultValue = el.attributes.defaultValue.value;
+                if (defaultValueString !== undefined) {
+                    const defaultValue = defaultValueString.nodeValue;
                     defaultValueName = defaultValue.substring(defaultValue.indexOf('{') + 1, defaultValue.indexOf('}'));
                 }
-                fieldData.value = this.state.task[defaultValueName] ? this.state.task[defaultValueName].value : fieldData.values[0].id.value;
+                fieldData.value = this.state.task[defaultValueName] ? this.state.task[defaultValueName].value : fieldData.values[0].enumValueId;
             }
-            fieldData.type = el.attributes.type.value;
-            fieldData.label = el.attributes.label.value;
             formValues.push(fieldData);
         });
         // console.log("formValues", formValues);
@@ -90,7 +100,8 @@ class ModalCompleteContainer extends Component {
             });
         }
         if (prevProps.xmlData !== this.props.xmlData && prevProps.xmlData === null) {
-            this.formDataFields = [...this.props.xmlData].find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
+            // this.formDataFields = [...this.props.xmlData].find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
+            this.formDataFields = Array.from(this.props.xmlData).find(el => el.nodeName === "bpmn:extensionElements").childNodes[1].childNodes;
             this.setState({
                 ...this.state,
                 modalOpen: true,
@@ -222,8 +233,8 @@ class ModalCompleteContainer extends Component {
                                                     label={el.label}
                                                     onChange={e => this.handleChange(e, el.id, el.type)}
                                                     control='select'>
-                                    {el.values.map(elem => <option key={elem.id.value}
-                                                                   value={elem.id.value}>{elem.name.value}</option>)}
+                                    {el.values.map(elem => <option key={elem.enumValueId}
+                                                                   value={elem.enumValueId}>{elem.enumValueName}</option>)}
                                 </Form.Field>)
                             } else {
                                 return (<Form.Field key={el.id} fluid width={8}

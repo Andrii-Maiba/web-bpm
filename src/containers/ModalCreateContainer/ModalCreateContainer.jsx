@@ -29,7 +29,6 @@ class ModalCreateContainer extends Component {
     }
 
     getCreatingFormFieldsData = (formDataFields, formData = []) => {
-        // console.dir(Array.from(formDataFields).filter(el => el.nodeName === "camunda:formField"))
         Array.from(formDataFields).filter(el => el.nodeName === "camunda:formField").forEach(el => {
             let attributes = Array.from(el.attributes);
             let type = attributes.find(el => el.nodeName === "type").nodeValue;
@@ -74,13 +73,12 @@ class ModalCreateContainer extends Component {
             }
             formData.push(fieldData);
         });
-        // console.log("formValues", formData);
+        // console.dir(formData);
         return formData;
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.xmlStartEventData !== this.props.xmlStartEventData && prevProps.xmlStartEventData === null) {
-            // this.creatingFormFields = Array.from(this.props.xmlStartEventData).find(el => el.nodeName === "bpmn:extensionElements").children[0].children;
             this.creatingFormFields = Array.from(this.props.xmlStartEventData).find(el => el.nodeName === "bpmn:extensionElements").childNodes[1].childNodes;
             // console.dir(this.creatingFormFields)
             this.setState({
@@ -195,15 +193,15 @@ class ModalCreateContainer extends Component {
                                         {(el.fileName !== "") ? el.fileName : intl.formatMessage(createModalMessages["input-file"])}
                                     </label>
                                 </Fragment>)
-                            } else if (el.type === "enum") {
-                                return (<Form.Field key={el.id}
-                                                    value={el.value}
-                                                    label={el.label}
-                                                    onChange={e => this.handleChange(e, el.id, el.type)}
-                                                    control='select'>
-                                    {el.values.map(elem => <option key={elem.enumValueId}
-                                                                   value={elem.enumValueId}>{elem.enumValueName}</option>)}
-                                </Form.Field>)
+                                } else if (el.type === "enum") {
+                                    return (<Form.Field key={el.id}
+                                                        value={el.value}
+                                                        label={el.label}
+                                                        onChange={e => this.handleChange(e, el.id, el.type)}
+                                                        control='select'>
+                                        {el.values.map(elem => <option key={elem.enumValueId}
+                                                                       value={elem.enumValueId}>{elem.enumValueName}</option>)}
+                                    </Form.Field>)
                             } else {
                                 return (<Form.Field key={el.id} fluid width={8}
                                                     control={Input}

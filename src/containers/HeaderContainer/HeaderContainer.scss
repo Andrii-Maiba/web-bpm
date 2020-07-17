@@ -13,9 +13,13 @@
 
 @media only screen and (max-width: 767px) {
     .menu__item-first {
-        display: flex!important;
-        justify-content: space-between!important;
-        flex-wrap: wrap!important;
+        display: inline-block!important;
+    }
+
+    .menu__item-flex-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .menu__item-first:hover {

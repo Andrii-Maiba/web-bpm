@@ -54,12 +54,12 @@ const getXmlSuccess = xml => {
 const postCompleteTask = (service, dispatch) => (id, formData) => {
     dispatch({type: COMPLETE_TASK_REQUEST});
     service.postCompleteTask(id, formData).then(res => {
-        // console.log("postCompleteStatus", res.status)
+        // console.dir(res.status)
         dispatch({type: COMPLETE_TASK_SUCCESS});
         dispatch(deleteTask(id));
     }).catch(err => {
-        // console.log("err", err.data.message);
-        dispatch(completeTaskFailure(err.data));
+        // console.dir(err);
+        err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
     });
 };
 
@@ -78,16 +78,16 @@ const getXml = (service, dispatch) => (procDefinitionKey, taskDefinitionKey) => 
     // console.log("getXml action", procDefinitionKey, taskDefinitionKey)
     dispatch({type: COMPLETE_TASK_REQUEST});
     service.getXml(procDefinitionKey).then(res => {
-        let oParser = new DOMParser();
-        let oDOM = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
-        let taskFormData = [...oDOM.documentElement.firstElementChild.children]
-            .filter(el => el.nodeName === "bpmn:userTask" && el.id === taskDefinitionKey)[0].children;
+        const oParser = new DOMParser();
+        const oXML = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
+        const tasksData = Array.from(oXML.documentElement.firstElementChild.childNodes).filter(el => el.nodeName === "bpmn:userTask");
+        const taskFormData = tasksData.find(el => Array.from(el.attributes)
+            .find(elem => elem.nodeName === "id" && elem.nodeValue === taskDefinitionKey)).childNodes;
+        // console.dir(taskFormData);
         dispatch(getXmlSuccess(taskFormData));
     }).catch(err => {
         err.data ? dispatch(completeTaskFailure(err.data)) : dispatch(completeTaskFailure(err));
     });
 };
 
-export {postCompleteTask, clearErrorMessage, closeTask, getXml,
-    getTaskAppData,
-    openTask};
+export {postCompleteTask, clearErrorMessage, closeTask, getXml, getTaskAppData, openTask};
