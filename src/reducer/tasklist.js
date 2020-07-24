@@ -2,7 +2,7 @@ import {
     GET_TASKLIST_REQUEST,
     GET_TASKLIST_FAILURE,
     GET_TASKSDATA_SUCCESS,
-    CREATE_TASK_SUCCESS,
+    // CREATE_TASK_SUCCESS,
     DELETE_TASK,
     SET_CURRENT_ITEMS_PART
 } from '../constants/tasklist';
@@ -54,23 +54,15 @@ const updateTasklist = (state, action) => {
                 currentItemsPart: action.payload.part,
                 currentPartsPortion: action.payload.portion
             };
-        // case SET_CURRENT_PARTS_PORTION:
+        // case CREATE_TASK_SUCCESS:
         //     return {
         //         ...state.tasklist,
         //         loading: false,
         //         error: null,
-        //         currentPartsPortion: action.payload
+        //         list: [...state.tasklist.list, action.payload],
         //     };
-        case CREATE_TASK_SUCCESS:
-            return {
-                ...state.tasklist,
-                loading: false,
-                error: null,
-                list: [...state.tasklist.list, action.payload],
-            };
         case DELETE_TASK:
             return {
-                // ...state.tasklist,
                 loading: false,
                 error: null,
                 currentItemsPart: 1,

@@ -2,11 +2,11 @@ import React, {useState, useEffect} from "react";
 import {Icon, Menu, Table, Input, Loader, Dimmer} from "semantic-ui-react";
 import {useIntl} from 'react-intl';
 import ModalCompleteContainer from "../../containers/ModalCompleteContainer/ModalCompleteContainer";
-import ModalCreateContainer from "../../containers/ModalCreateContainer/ModalCreateContainer";
+import ModalChooseProcessContainer from "../../containers/ModalChooseProcessContainer/ModalChooseProcessContainer";
 import {outputAmountString} from "../../utils/outputAmountString";
 import {messages} from './TasklistTableMessages';
 
-const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, currentPartsPortion}) => {
+const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, currentPartsPortion, location}) => {
     const [filterValue, setFilterValue] = useState('');
     useEffect(() => {
         setCurrentItemsPart(1, 1);
@@ -97,8 +97,6 @@ const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, cu
         if (partsPortionsCount > currentPartsPortion) {
             setCurrentItemsPart(currentPartsPortion * partsPerPortion + 1, currentPartsPortion + 1);
         }
-        //     const nextItemsPart = currentItemsPart + 1;
-        //     nextItemsPart >= itemsPartsCount ? setCurrentItemsPart(itemsPartsCount) : setCurrentItemsPart(nextItemsPart);
     }
     const handleItemsPartClick = (e, part, portion) => {
         e.preventDefault();
@@ -108,7 +106,7 @@ const TasklistTable = ({loading, list, currentItemsPart, setCurrentItemsPart, cu
     return (
         <div className='TasklistTable'>
             <div className='flexBetween'>
-                <ModalCreateContainer/>
+                <ModalChooseProcessContainer location={location.pathname}/>
                 <Input value={filterValue} onChange={e => setFilterValue(e.target.value.toString())} focus icon='search'
                        placeholder={intl.formatMessage(messages["filter-placeholder"])}
                        className='tasklist__filter'/>

@@ -54,7 +54,7 @@ const getXmlSuccess = xml => {
 const postCompleteTask = (service, dispatch) => (id, formData) => {
     dispatch({type: COMPLETE_TASK_REQUEST});
     service.postCompleteTask(id, formData).then(res => {
-        // console.dir(res.status)
+        // console.dir(res.status);
         dispatch({type: COMPLETE_TASK_SUCCESS});
         dispatch(deleteTask(id));
     }).catch(err => {

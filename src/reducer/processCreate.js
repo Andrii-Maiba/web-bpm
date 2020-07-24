@@ -3,7 +3,7 @@ import {
     CREATE_PROCESS_FAILURE,
     CREATE_PROCESS_SUCCESS,
     CLEAR_CREATE_ERROR_MESSAGE,
-    CLOSE_CREATE_MODAL,
+    // CLOSE_CREATE_MODAL,
     GET_START_EVENT_XML_SUCCESS
 } from '../constants/createProcess';
 
@@ -34,15 +34,20 @@ const updateProcessCreate = (state, action) => {
                 isCreated: true,
             };
         case CREATE_PROCESS_FAILURE:
-            return {...state.processCreate, loading: false, createProcessError: action.payload, isCreated: false};
+            return {
+                ...state.processCreate,
+                loading: false,
+                createProcessError: action.payload,
+                isCreated: false
+            };
         case CLEAR_CREATE_ERROR_MESSAGE:
             return {
                 ...state.processCreate,
                 createProcessError: null,
                 isCreated: false,
             };
-        case CLOSE_CREATE_MODAL:
-            return {loading: false, xmlStartEventData: null, createProcessError: null, isCreated: false};
+        // case CLOSE_CREATE_MODAL:
+        //     return {loading: false, xmlStartEventData: null, createProcessError: null, isCreated: false};
         default:
             return state.processCreate;
     }

@@ -5,6 +5,7 @@ import HeaderNavContainer from '../../containers/HeaderContainer/HeaderContainer
 import MakerTasklistPageContainer from '../../containers/MakerTasklistPageContainer/MakerTasklistPageContainer';
 import CheckerTasklistPageContainer from '../../containers/CheckerTasklistPageContainer/CheckerTasklistPageContainer';
 import ArchivePageContainer from '../../containers/ArchivePageContainer/ArchivePageContainer';
+import CreateProcessPageContainer from '../../containers/CreateProcessPageContainer/CreateProcessPageContainer'
 
 const App = () => {
     return (
@@ -12,6 +13,7 @@ const App = () => {
             <HeaderNavContainer />
             <Switch>
                 <Route path="/" component={MakerTasklistPageContainer} exact />
+                <Route path="/create-process/:key" component={CreateProcessPageContainer} />
                 <Route path="/checker" component={CheckerTasklistPageContainer} />
                 <Route path="/archive" component={ArchivePageContainer} />
                 <Route path="/*" render={() => <h3 className='app__nonexistent-page'>

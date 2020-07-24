@@ -3,10 +3,10 @@ import {
     CREATE_PROCESS_FAILURE,
     CREATE_PROCESS_SUCCESS,
     CLEAR_CREATE_ERROR_MESSAGE,
-    CLOSE_CREATE_MODAL,
+    // CLOSE_CREATE_MODAL,
     GET_START_EVENT_XML_SUCCESS
 } from '../constants/createProcess';
-import {CREATE_TASK_SUCCESS} from '../constants/tasklist'
+// import {CREATE_TASK_SUCCESS} from '../constants/tasklist'
 
 const createProcessFailure = error => {
     return {
@@ -15,18 +15,18 @@ const createProcessFailure = error => {
     };
 };
 
-const createTaskSuccess = (variables, taskData) => {
-    return {
-        type: CREATE_TASK_SUCCESS,
-        payload: {...taskData, ...variables},
-    };
-};
+// const createTaskSuccess = (variables, taskData) => {
+//     return {
+//         type: CREATE_TASK_SUCCESS,
+//         payload: {...taskData, ...variables},
+//     };
+// };
 
-const closeCreateModal = () => {
-    return {
-        type: CLOSE_CREATE_MODAL
-    };
-}
+// const closeCreateModal = () => {
+//     return {
+//         type: CLOSE_CREATE_MODAL
+//     };
+// }
 
 const clearCreateErrorMessage = () => {
     return {
@@ -45,10 +45,10 @@ const createProcess = (service, dispatch) => (data, processKey, businessKey) => 
     dispatch({type: CREATE_PROCESS_REQUEST});
     service.postCreateProcess(data, processKey, businessKey).then(res => {
         dispatch({type: CREATE_PROCESS_SUCCESS});
-        // console.dir(res.status)
-        res && service.getTaskData(res.data.id).then(result => {
-            dispatch(createTaskSuccess(res.data.variables, result.data[0]));
-        });
+        // console.dir(res.status);
+        // res && service.getTaskData(res.data.id).then(result => {
+        //     dispatch(createTaskSuccess(res.data.variables, result.data[0]));
+        // });
     }).catch(err => {
         dispatch(createProcessFailure(err.data));
     });
@@ -59,8 +59,8 @@ const getStartEventXml = (service, dispatch) => procDefinitionKey => {
     service.getXml(procDefinitionKey).then(res => {
         let oParser = new DOMParser();
         let xmlDoc = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
-        let creatingProcessFormData = Array.from(xmlDoc.documentElement.firstElementChild.childNodes)
-            .find(el => el.nodeName === "bpmn:startEvent").childNodes;
+        let creatingProcessFormData = xmlDoc.documentElement.firstElementChild;
+        // console.log("getStartEventXml", xmlDoc.documentElement.firstElementChild);
         dispatch(getStartEventXmlSuccess(creatingProcessFormData));
     }).catch(err => {
         // console.dir(err.stack);
@@ -68,4 +68,6 @@ const getStartEventXml = (service, dispatch) => procDefinitionKey => {
     });
 };
 
-export {createProcess, clearCreateErrorMessage, closeCreateModal, getStartEventXml};
+export {createProcess, clearCreateErrorMessage,
+    // closeCreateModal,
+    getStartEventXml};

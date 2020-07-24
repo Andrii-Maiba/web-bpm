@@ -50,6 +50,14 @@ class Services {
         // });
     }
 
+    getXml = processKey => {
+        return axios.get(this._baseUrl + `process-definition/key/${processKey}/xml`).catch(error => {
+            const err = (new Error('Something went wrong'));
+            err.data = error;
+            throw err;
+        })
+    }
+
     postCompleteTask = (id, formData) => {
         const variables = {};
         formData.forEach(el => {
@@ -76,20 +84,23 @@ class Services {
                 if (el.value !== "") {
                     variables[el.id] = {value: Number(el.value), type: el.type};
                 }
+            } else if (el.type === "date") {
+                const dateArray = el.value.split('-');
+                variables[el.id] = {value: `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}T00:00:00.000+0000`, type: el.type};
             } else {
                 variables[el.id] = {value: el.value, type: el.type};
             }
         });
         // console.dir(variables)
-        return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, { variables }).catch(error => {
+        return axios.post(this._baseUrl + `engine/default/task/${id}/complete`, {variables}).catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
             throw err;
         })
     }
 
-    getXml = processKey => {
-        return axios.get(this._baseUrl + `process-definition/key/${processKey}/xml`).catch(error => {
+    getProcessesList = () => {
+        return axios.get(this._baseUrl + 'engine/default/process-definition?latestVersion=true').catch(error => {
             const err = (new Error('Something went wrong'));
             err.data = error;
             throw err;
@@ -122,6 +133,9 @@ class Services {
                 if (el.value !== "") {
                     variables[el.id] = {value: Number(el.value), type: el.type};
                 }
+            } else if (el.type === "date") {
+                const dateArray = el.value.split('-');
+                variables[el.id] = {value: `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}T00:00:00.000+0000`, type: el.type};
             } else {
                 variables[el.id] = {value: el.value, type: el.type};
             }
@@ -138,13 +152,13 @@ class Services {
         })
     }
 
-    getTaskData = id => {
-        return axios.get(this._baseUrl + `engine/default/task?processInstanceId=${id}`).catch(error => {
-            const err = (new Error('Something went wrong'));
-            err.data = error;
-            throw err;
-        })
-    }
+    // getTaskData = id => {
+    //     return axios.get(this._baseUrl + `engine/default/task?processInstanceId=${id}`).catch(error => {
+    //         const err = (new Error('Something went wrong'));
+    //         err.data = error;
+    //         throw err;
+    //     })
+    // }
 
     getTaskFileContent = (id, fileVariableId) => {
         return axios.get(this._baseUrl + `engine/default/task/${id}/variables/${fileVariableId}/data`, {

@@ -1,4 +1,3 @@
-@import url("containers/MakerTasklistPageContainer/MakerTasklistPageContainer.scss");
 @import url("containers/ModalCompleteContainer/ModalCompleteContainer.scss");
 @import url("containers/HeaderContainer/HeaderContainer.scss");
 @import url("components/App/App.scss");
@@ -16,6 +15,10 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.pageBody {
+  margin-top: 100px;
 }
 
 .flexBetween {

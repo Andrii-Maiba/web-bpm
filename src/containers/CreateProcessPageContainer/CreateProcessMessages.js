@@ -1,24 +1,20 @@
 import {defineMessages} from "react-intl";
 
-export const createModalMessages = defineMessages({
-    "button-open": {
-        id: "modalCreate.button-open",
-        defaultMessage: "Створити"
-    },
+export const createProcessMessages = defineMessages({
     "header": {
-        id: "modalCreate.header",
+        id: "createProcess.header",
         defaultMessage: "Новий Процес"
     },
     "input-file": {
-        id: "modalCreate.input-file",
+        id: "createProcess.input-file",
         defaultMessage: "Вибрати файл"
     },
     "button-action": {
-        id: "modalCreate.button-action",
+        id: "createProcess.button-action",
         defaultMessage: "Створити"
     },
     "error-header": {
-        id: "modalCreate.error-header",
+        id: "createProcess.error-header",
         defaultMessage: "Сталась помилка"
     },
 });
