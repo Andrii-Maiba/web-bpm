@@ -1,7 +1,8 @@
-@import url("containers/ModalCompleteContainer/ModalCompleteContainer.scss");
-@import url("containers/HeaderContainer/HeaderContainer.scss");
 @import url("components/App/App.scss");
+@import url("containers/HeaderContainer/HeaderContainer.scss");
+@import url("containers/CreateProcessContainer/CreateProcessContainer.scss");
 @import url("components/TasklistTable/TasklistTable.scss");
+@import url("containers/ModalCompleteContainer/ModalCompleteContainer.scss");
 
 body {
   margin: 0;

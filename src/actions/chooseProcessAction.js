@@ -13,10 +13,10 @@ const getProcessesFailure = error => {
     };
 };
 
-const getProcessesSuccess = (processes, location) => {
+const getProcessesSuccess = processes => {
     return {
         type: GET_PROCESSES_SUCCESS,
-        payload: { processes, location }
+        payload: processes
     };
 };
 
@@ -32,10 +32,10 @@ const clearChooseProcessErrorMessage = () => {
     };
 }
 
-const getProcesses = (service, dispatch) => location => {
+const getProcesses = (service, dispatch) => () => {
     dispatch({type: GET_PROCESSES_REQUEST});
     service.getProcessesList().then(res => {
-        dispatch(getProcessesSuccess(res.data, location));
+        dispatch(getProcessesSuccess(res.data));
     }).catch(err => {
         err.data ? dispatch(getProcessesFailure(err.data)) : dispatch(getProcessesFailure(err));
     });

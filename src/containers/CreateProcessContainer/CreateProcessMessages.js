@@ -1,10 +1,6 @@
 import {defineMessages} from "react-intl";
 
 export const createProcessMessages = defineMessages({
-    "header": {
-        id: "createProcess.header",
-        defaultMessage: "Новий Процес"
-    },
     "input-file": {
         id: "createProcess.input-file",
         defaultMessage: "Вибрати файл"
@@ -17,4 +13,8 @@ export const createProcessMessages = defineMessages({
         id: "createProcess.error-header",
         defaultMessage: "Сталась помилка"
     },
+    "error-content": {
+        id: "createProcess.error-content",
+        defaultMessage: "Не можливо створити процес обраного типу"
+    }
 });

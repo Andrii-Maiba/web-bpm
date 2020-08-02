@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Button, Menu, Header, Modal, Message, Dimmer, Loader} from 'semantic-ui-react';
-import {Link} from "react-router-dom";
 import {injectIntl} from "react-intl";
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
@@ -11,6 +10,7 @@ import {
     getProcesses
 } from '../../actions/chooseProcessAction';
 import {chooseProcessMessages} from './ModalChooseProcessContainerMessages';
+import CreateProcessContainer from '../CreateProcessContainer/CreateProcessContainer';
 
 class ModalChooseProcessContainer extends Component {
     state = {modalChooseProcessOpen: false}
@@ -25,14 +25,22 @@ class ModalChooseProcessContainer extends Component {
     // }
 
     handleChooseProcessModalOpen = () => {
-        this.props.getProcesses(this.props.location);
-        this.setState({modalChooseProcessOpen: true})
+        this.props.getProcesses();
+        this.setState({modalChooseProcessOpen: true, isChosen: false, chosenProcess: null})
     }
 
     handleChooseProcessModalClose = () => {
         this.setState({modalChooseProcessOpen: false});
         this.props.closeChooseProcessModal();
     }
+
+    handleChooseProcess = (key, name) => {
+        this.setState({modalChooseProcessOpen: true, isChosen: true, chosenProcess: {key, name}});
+    }
+
+    // handleRechooseProcess = () => {
+    //     this.setState({modalChooseProcessOpen: true, isChosen: false, chosenProcess: null});
+    // }
 
     render() {
         const {loading, chooseProcessError, clearChooseProcessErrorMessage, intl} = this.props;
@@ -48,11 +56,14 @@ class ModalChooseProcessContainer extends Component {
                 <Header color="blue" icon='add' content={intl.formatMessage(chooseProcessMessages.header)}/>
                 <Modal.Content>
                     {loading && <Dimmer active inverted><Loader inverted/></Dimmer>}
-                    {this.props.processes !== null && <Menu fluid vertical>
+                    {this.props.processes !== null && !this.state.isChosen && <Menu fluid vertical>
                         {this.props.processes.map(process => <Menu.Item
-                            onClick={this.handleChooseProcessModalClose} key={process.key}
-                            as={Link} to={`/create-process/${process.key}`}>{process.name}</Menu.Item>)}
+                            onClick={() => this.handleChooseProcess(process.key, process.name)} key={process.key}>{process.name}</Menu.Item>)}
                     </Menu>}
+                    {this.state.isChosen && this.state.chosenProcess !== null && <CreateProcessContainer chosenProcessName={this.state.chosenProcess.name}
+                                                                                                         chosenProcess={this.state.chosenProcess.key}
+                                                                                                         handleRechooseProcess={this.handleRechooseProcess}
+                                                                                                         handleChooseProcessModalClose={this.handleChooseProcessModalClose}/>}
                     {chooseProcessError &&
                     <Message error header={intl.formatMessage(chooseProcessMessages["error-header"])}
                              content={chooseProcessError}/>}
@@ -68,7 +79,7 @@ const mapStateToProps = ({processesChoose: {loading, chooseProcessError, process
 
 const mapDispatchToProps = (dispatch, {services}) => {
     return {
-        getProcesses: location => getProcesses(services, dispatch)(location),
+        getProcesses: () => getProcesses(services, dispatch)(),
         clearChooseProcessErrorMessage: () => dispatch(clearChooseProcessErrorMessage()),
         closeChooseProcessModal: () => dispatch(closeChooseProcessModal())
     };

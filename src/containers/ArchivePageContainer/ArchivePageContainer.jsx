@@ -5,6 +5,7 @@ import TasklistTable from '../../components/TasklistTable/TasklistTable';
 import compose from '../../utils/compose';
 import withServices from '../../components/hocs/withServices';
 import {getTasklistData, setCurrentItemsPart} from '../../actions/tasklistAction';
+import {createProcessUpdateState} from '../../actions/createProcessAction';
 
 class ArchivePageContainer extends Component {
     componentDidMount() {
@@ -17,7 +18,17 @@ class ArchivePageContainer extends Component {
             this.props.xmlData !== nextProps.xmlData ||
             this.props.processes !== nextProps.processes ||
             this.props.openedTask !== nextProps.openedTask ||
-            this.props.chooseProcessError !== nextProps.chooseProcessError);
+            this.props.chooseProcessError !== nextProps.chooseProcessError ||
+            this.props.xmlStartEventData !== nextProps.xmlStartEventData ||
+            // this.props.isCreated !== nextProps.isCreated ||
+            this.props.createProcessError !== nextProps.createProcessError);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.isCreated) {
+            this.props.getTasklistData("Maker");
+            this.props.createProcessUpdateState();
+        }
     }
 
     render() {
@@ -34,25 +45,28 @@ class ArchivePageContainer extends Component {
 const mapStateToProps = ({
                              tasklist: {list, loading, currentItemsPart, currentPartsPortion},
                              processesChoose: {chooseProcessError, processes},
-                             taskComplete: {isComplete, completeTaskError, xmlData}
+                             taskComplete: {isComplete, completeTaskError, xmlData, openedTask},
+                             processCreate: {isCreated, createProcessError, xmlStartEventData}
                          }) => {
     return {
         list,
         loading,
         currentItemsPart,
         currentPartsPortion,
-        xmlData,
+        xmlData, openedTask,
         isComplete,
         completeTaskError,
         processes,
-        chooseProcessError
+        chooseProcessError,
+        isCreated, createProcessError, xmlStartEventData
     };
 };
 
 const mapDispatchToProps = (dispatch, {services}) => {
     return {
         getTasklistData: assignee => getTasklistData(services, dispatch)(assignee),
-        setCurrentItemsPart: (part, portion) => dispatch(setCurrentItemsPart(part, portion))
+        setCurrentItemsPart: (part, portion) => dispatch(setCurrentItemsPart(part, portion)),
+        createProcessUpdateState: () => dispatch(createProcessUpdateState())
     };
 };
 

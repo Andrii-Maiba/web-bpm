@@ -11,7 +11,7 @@ const updateProcessesChoose = (state, action) => {
         return {
             loading: false,
             processes: [],
-            locationPath: '/',
+            // locationPath: '/',
             chooseProcessError: null
         };
     }
@@ -24,8 +24,8 @@ const updateProcessesChoose = (state, action) => {
         case GET_PROCESSES_SUCCESS:
             return {
                 loading: false,
-                processes: action.payload.processes.filter(el => el.versionTag !== null),
-                locationPath: action.payload.location,
+                processes: action.payload.filter(el => el.versionTag !== null),
+                // locationPath: action.payload.location,
                 chooseProcessError: null
             };
         case GET_PROCESSES_FAILURE:
@@ -41,7 +41,7 @@ const updateProcessesChoose = (state, action) => {
             };
         case CLOSE_CHOOSE_PROCESSES_MODAL:
             return {
-                ...state.processesChoose,
+                // ...state.processesChoose,
                 loading: false,
                 processes: [],
                 chooseProcessError: null

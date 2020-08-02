@@ -7,7 +7,7 @@ export const chooseProcessMessages = defineMessages({
     },
     "header": {
         id: "modalChooseProcess.header",
-        defaultMessage: "Процеси"
+        defaultMessage: "Процес"
     },
     "error-header": {
         id: "modalChooseProcess.error-header",

@@ -1,6 +1,6 @@
 {
-    "name": "web-bpm-tasklist",
-    "short_name": "web-bpm",
+    "name": "Web BPM tasklist",
+    "short_name": "Web BPM",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

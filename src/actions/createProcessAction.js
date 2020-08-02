@@ -3,7 +3,7 @@ import {
     CREATE_PROCESS_FAILURE,
     CREATE_PROCESS_SUCCESS,
     CLEAR_CREATE_ERROR_MESSAGE,
-    // CLOSE_CREATE_MODAL,
+    CREATE_PROCESS_UPDATE_STATE,
     GET_START_EVENT_XML_SUCCESS
 } from '../constants/createProcess';
 // import {CREATE_TASK_SUCCESS} from '../constants/tasklist'
@@ -22,11 +22,11 @@ const createProcessFailure = error => {
 //     };
 // };
 
-// const closeCreateModal = () => {
-//     return {
-//         type: CLOSE_CREATE_MODAL
-//     };
-// }
+const createProcessUpdateState = () => {
+    return {
+        type: CREATE_PROCESS_UPDATE_STATE
+    };
+}
 
 const clearCreateErrorMessage = () => {
     return {
@@ -60,7 +60,7 @@ const getStartEventXml = (service, dispatch) => procDefinitionKey => {
         let oParser = new DOMParser();
         let xmlDoc = oParser.parseFromString(res.data.bpmn20Xml, "application/xml");
         let creatingProcessFormData = xmlDoc.documentElement.firstElementChild;
-        // console.log("getStartEventXml", xmlDoc.documentElement.firstElementChild);
+        // console.log("getStartEventXml", xmlDoc.documentElement);
         dispatch(getStartEventXmlSuccess(creatingProcessFormData));
     }).catch(err => {
         // console.dir(err.stack);
@@ -68,6 +68,8 @@ const getStartEventXml = (service, dispatch) => procDefinitionKey => {
     });
 };
 
-export {createProcess, clearCreateErrorMessage,
-    // closeCreateModal,
-    getStartEventXml};
+export {
+    createProcess, clearCreateErrorMessage,
+    createProcessUpdateState,
+    getStartEventXml
+};
